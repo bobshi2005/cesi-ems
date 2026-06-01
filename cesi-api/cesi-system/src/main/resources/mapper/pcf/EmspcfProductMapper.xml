@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesi.pcf.mapper.EmspcfProductMapper">
+
+    <resultMap type="com.cesi.pcf.domain.EmspcfProduct" id="ProductResult">
+        <result property="id"                  column="id"/>
+        <result property="categoryId"          column="category_id"/>
+        <result property="productName"         column="product_name"/>
+        <result property="specModel"           column="spec_model"/>
+        <result property="unit"                column="unit"/>
+        <result property="lifecycleBoundary"   column="lifecycle_boundary"/>
+        <result property="accountingStandard"  column="accounting_standard"/>
+        <result property="functionalUnit"      column="functional_unit"/>
+        <result property="defaultYear"         column="default_year"/>
+        <result property="status"              column="status"/>
+        <result property="remark"              column="remark"/>
+        <result property="createBy"            column="create_by"/>
+        <result property="createTime"          column="create_time"/>
+        <result property="updateBy"            column="update_by"/>
+        <result property="updateTime"          column="update_time"/>
+        <result property="categoryName"        column="category_name"/>
+    </resultMap>
+
+    <select id="selectByCategoryId" resultMap="ProductResult">
+        SELECT p.*, c.category_name
+        FROM ems_pcf_product p
+        LEFT JOIN ems_pcf_category c ON c.id = p.category_id
+        WHERE p.category_id = #{categoryId}
+        ORDER BY p.id ASC
+    </select>
+
+    <select id="selectAllEnabled" resultMap="ProductResult">
+        SELECT p.*, c.category_name
+        FROM ems_pcf_product p
+        LEFT JOIN ems_pcf_category c ON c.id = p.category_id
+        WHERE p.status = '0'
+        ORDER BY c.order_num ASC, p.id ASC
+    </select>
+
+</mapper>

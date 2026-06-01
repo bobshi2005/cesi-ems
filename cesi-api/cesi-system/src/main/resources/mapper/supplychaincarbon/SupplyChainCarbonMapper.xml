@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesi.supplychaincarbon.mapper.SupplyChainCarbonMapper">
+
+    <resultMap type="com.cesi.supplychaincarbon.domain.SupplyChainCarbon" id="SupplyChainCarbonResult">
+        <result property="id"                  column="id"/>
+        <result property="supplierName"        column="supplier_name"/>
+        <result property="materialCategory"    column="material_category"/>
+        <result property="supplyMaterial"      column="supply_material"/>
+        <result property="specModel"           column="spec_model"/>
+        <result property="systemBoundary"      column="system_boundary"/>
+        <result property="materialTotal"       column="material_total"/>
+        <result property="materialUnit"        column="material_unit"/>
+        <result property="carbonFootprint"     column="carbon_footprint"/>
+        <result property="carbonFootprintUnit" column="carbon_footprint_unit"/>
+        <result property="contactPerson"       column="contact_person"/>
+        <result property="contactWay"          column="contact_way"/>
+        <result property="supplierAddress"     column="supplier_address"/>
+        <result property="createBy"            column="create_by"/>
+        <result property="createTime"          column="create_time"/>
+        <result property="updateBy"            column="update_by"/>
+        <result property="updateTime"          column="update_time"/>
+        <result property="remark"              column="remark"/>
+    </resultMap>
+
+    <select id="selectPage" resultMap="SupplyChainCarbonResult">
+        SELECT id, supplier_name, material_category, supply_material, spec_model,
+               system_boundary, material_total, material_unit,
+               carbon_footprint, carbon_footprint_unit,
+               contact_person, contact_way, supplier_address,
+               create_by, create_time, update_by, update_time, remark
+        FROM supply_chain_carbon
+        <where>
+            <if test="supplierName != null and supplierName != ''">
+                AND supplier_name LIKE CONCAT('%', #{supplierName}, '%')
+            </if>
+            <if test="materialCategory != null and materialCategory != ''">
+                AND material_category = #{materialCategory}
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+</mapper>

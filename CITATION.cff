@@ -1,0 +1,58 @@
+cff-version: 1.2.0
+title: "CESI EMS — Integrated Carbon-Energy Management System"
+message: "If you use this software, please cite the accompanying paper."
+type: software
+authors:
+  - given-names: Yongchang
+    family-names: Shi
+    affiliation: "China Electronic Standardization Institute, East China Branch, Suzhou, China"
+  - given-names: Xudong
+    family-names: Qiu
+    email: qiuxd@cesi.cn
+    affiliation: "China Electronic Standardization Institute, East China Branch, Suzhou, China"
+  - given-names: Zhonghui
+    family-names: Chen
+    affiliation: "China Electronic Standardization Institute, East China Branch, Suzhou, China"
+  - given-names: Chen
+    family-names: Hu
+    affiliation: "China Electronic Standardization Institute, East China Branch, Suzhou, China"
+  - given-names: Hongwei
+    family-names: Tao
+    affiliation: "Yingkou Cigarette Factory, Hongta Liaoning Tobacco Co., Ltd., Yingkou, China"
+  - given-names: Longji
+    family-names: Zhang
+    affiliation: "Yingkou Cigarette Factory, Hongta Liaoning Tobacco Co., Ltd., Yingkou, China"
+  - given-names: Minghao
+    family-names: Yu
+    affiliation: "Yingkou Cigarette Factory, Hongta Liaoning Tobacco Co., Ltd., Yingkou, China"
+  - given-names: Jianrong
+    family-names: Sheng
+    affiliation: "Jiangsu Wenshi Technology Co., Ltd., Nanjing, China"
+  - given-names: Bo
+    family-names: Hong
+    affiliation: "NARI Technology Co., Ltd., Nanjing, China"
+license: MIT
+preferred-citation:
+  type: article
+  title: "CESI EMS: An Integrated Carbon-Energy Management System with IoT-to-Carbon Data Pipeline, Product Carbon Footprint, and Digitized MRV"
+  authors:
+    - given-names: Yongchang
+      family-names: Shi
+    - given-names: Xudong
+      family-names: Qiu
+    - given-names: Zhonghui
+      family-names: Chen
+    - given-names: Chen
+      family-names: Hu
+    - given-names: Hongwei
+      family-names: Tao
+    - given-names: Longji
+      family-names: Zhang
+    - given-names: Minghao
+      family-names: Yu
+    - given-names: Jianrong
+      family-names: Sheng
+    - given-names: Bo
+      family-names: Hong
+  journal: "Journal of Cleaner Production"
+  year: 2026

@@ -1,0 +1,30 @@
+package com.cesi.realtimedata.service;
+
+import com.cesi.realtimedata.domain.dto.EnergyIndexMonitorDTO;
+import com.cesi.realtimedata.domain.vo.EquipmentPointParametersExcel;
+import com.cesi.realtimedata.domain.vo.ExportrealtimeTrendVO;
+import com.cesi.realtimedata.domain.vo.RealTimeDataVO;
+import com.cesi.realtimedata.domain.vo.RealTimeHistoryDataVO;
+
+import java.util.List;
+
+public interface RealtimeTrendService {
+
+    List<RealTimeDataVO> list(EnergyIndexMonitorDTO energyIndexMonitorDTO);
+
+    /**
+     * 根据code获取指定日期的历史点位数据
+     * @param tagCode 点位code
+     * @param dataTime 时间
+     * @return
+     */
+    List<RealTimeHistoryDataVO> chartByDay(String tagCode, String dataTime);
+
+
+    /**
+     * 导出实时监测Excel信息
+     * @return
+     */
+    List<EquipmentPointParametersExcel> export(ExportrealtimeTrendVO exportrealtimeTrendVO);
+
+}

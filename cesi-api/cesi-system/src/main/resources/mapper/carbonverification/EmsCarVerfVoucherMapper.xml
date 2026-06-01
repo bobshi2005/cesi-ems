@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesi.carbonverification.mapper.EmsCarVerfVoucherMapper">
+
+    <resultMap type="com.cesi.carbonverification.domain.EmsCarVerfVoucher" id="VoucherResult">
+        <result property="id"            column="id"/>
+        <result property="year"          column="year"/>
+        <result property="month"         column="month"/>
+        <result property="orgUnit"       column="org_unit"/>
+        <result property="emissionSource" column="emission_source"/>
+        <result property="voucherType"   column="voucher_type"/>
+        <result property="voucherName"   column="voucher_name"/>
+        <result property="fileName"      column="file_name"/>
+        <result property="filePath"      column="file_path"/>
+        <result property="fileSize"      column="file_size"/>
+        <result property="fileFormat"    column="file_format"/>
+        <result property="uploadBy"      column="upload_by"/>
+        <result property="uploadTime"    column="upload_time"/>
+        <result property="createBy"      column="create_by"/>
+        <result property="createTime"    column="create_time"/>
+        <result property="updateBy"      column="update_by"/>
+        <result property="updateTime"    column="update_time"/>
+        <result property="remark"        column="remark"/>
+    </resultMap>
+
+    <sql id="selectCols">
+        id, year, month, org_unit, emission_source, voucher_type, voucher_name,
+        file_name, file_path, file_size, file_format, upload_by, upload_time,
+        create_by, create_time, update_by, update_time, remark
+    </sql>
+
+    <select id="selectPage" resultMap="VoucherResult">
+        SELECT <include refid="selectCols"/>
+        FROM ems_carbon_verification_voucher
+        <where>
+            <if test="year != null">AND year = #{year}</if>
+            <if test="month != null">AND month = #{month}</if>
+            <if test="orgUnit != null and orgUnit != ''">AND org_unit = #{orgUnit}</if>
+            <if test="emissionSource != null and emissionSource != ''">AND emission_source = #{emissionSource}</if>
+            <if test="voucherType != null and voucherType != ''">AND voucher_type = #{voucherType}</if>
+            <if test="voucherName != null and voucherName != ''">
+                AND voucher_name LIKE CONCAT('%', #{voucherName}, '%')
+            </if>
+        </where>
+        ORDER BY year DESC, month DESC, id DESC
+    </select>
+
+    <select id="selectByYearAndSource" resultMap="VoucherResult">
+        SELECT <include refid="selectCols"/>
+        FROM ems_carbon_verification_voucher
+        WHERE year = #{year}
+        <if test="orgUnit != null and orgUnit != ''">AND org_unit = #{orgUnit}</if>
+        <if test="emissionSource != null and emissionSource != ''">AND emission_source = #{emissionSource}</if>
+        ORDER BY month
+    </select>
+
+    <select id="selectUploadedMonths" resultMap="VoucherResult">
+        SELECT DISTINCT emission_source, month
+        FROM ems_carbon_verification_voucher
+        WHERE year = #{year}
+        <if test="orgUnit != null and orgUnit != ''">AND org_unit = #{orgUnit}</if>
+        ORDER BY emission_source, month
+    </select>
+
+    <select id="selectByYear" resultMap="VoucherResult">
+        SELECT <include refid="selectCols"/>
+        FROM ems_carbon_verification_voucher
+        WHERE year = #{year}
+        <if test="orgUnit != null and orgUnit != ''">AND org_unit = #{orgUnit}</if>
+        ORDER BY emission_source, month
+    </select>
+
+</mapper>

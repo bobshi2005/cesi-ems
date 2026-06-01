@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesi.carbonbudget.mapper.EmsCarbonBudgetMapper">
+
+    <resultMap type="com.cesi.carbonbudget.domain.EmsCarbonBudget" id="EmsCarbonBudgetResult">
+        <result property="id"                  column="id"/>
+        <result property="boundaryName"        column="boundary_name"/>
+        <result property="budgetType"          column="budget_type"/>
+        <result property="budgetTimeType"      column="budget_time_type"/>
+        <result property="budgetYear"          column="budget_year"/>
+        <result property="budgetMonth"         column="budget_month"/>
+        <result property="regulationStandard"  column="regulation_standard"/>
+        <result property="emissionIntensity"   column="emission_intensity"/>
+        <result property="planValue"           column="plan_value"/>
+        <result property="planValueUnit"       column="plan_value_unit"/>
+        <result property="budgetEmission"      column="budget_emission"/>
+        <result property="warningThreshold"    column="warning_threshold"/>
+        <result property="warningMethod"       column="warning_method"/>
+        <result property="status"              column="status"/>
+        <result property="nodeId"              column="node_id"/>
+        <result property="createBy"            column="create_by"/>
+        <result property="createTime"          column="create_time"/>
+        <result property="updateBy"            column="update_by"/>
+        <result property="updateTime"          column="update_time"/>
+        <result property="remark"              column="remark"/>
+    </resultMap>
+
+    <select id="pageByCondition" resultMap="EmsCarbonBudgetResult">
+        SELECT id, boundary_name, budget_type, budget_time_type, budget_year, budget_month,
+               regulation_standard, emission_intensity, plan_value, plan_value_unit,
+               budget_emission, warning_threshold, warning_method,
+               status, node_id, create_by, create_time, update_by, update_time, remark
+        FROM ems_carbon_budget
+        <where>
+            <if test="budgetTimeType != null and budgetTimeType != ''">AND budget_time_type = #{budgetTimeType}</if>
+            <if test="budgetYear     != null">AND budget_year  = #{budgetYear}</if>
+            <if test="budgetMonth    != null">AND budget_month = #{budgetMonth}</if>
+            <if test="budgetType     != null and budgetType != ''">AND budget_type = #{budgetType}</if>
+            <if test="boundaryName   != null and boundaryName != ''">AND boundary_name LIKE CONCAT('%', #{boundaryName}, '%')</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

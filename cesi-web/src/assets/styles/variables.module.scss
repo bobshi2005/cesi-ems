@@ -1,0 +1,79 @@
+// ─── DARK THEME TOKENS ───────────────────────────────────────────
+[data-theme="dark"] {
+  --ems-bg-deepest:    #040b1a;
+  --ems-bg-sidebar:    #060d20;
+  --ems-bg-main:       #080f22;
+  --ems-bg-card:       #0b1530;
+  --ems-bg-header:     #0a1528;
+  --ems-bg-modal:      #0c1833;
+
+  --ems-accent:        #00aaff;
+  --ems-accent-bright: #33ccff;
+  --ems-accent-glow:   rgba(0,170,255,.25);
+  --ems-accent-green:  #00e896;
+  --ems-accent-orange: #ff9240;
+  --ems-accent-red:    #ff4d6a;
+  --ems-accent-yellow: #ffc940;
+
+  --ems-text-primary:   #d8e8f8;
+  --ems-text-secondary: #6e90b8;
+  --ems-text-muted:     #3a5878;
+  --ems-text-accent:    #00c8ff;
+
+  --ems-border-dim:    rgba(0,140,220,.12);
+  --ems-border-mid:    rgba(0,170,255,.20);
+  --ems-border-bright: rgba(0,200,255,.35);
+
+  --ems-grid-color:    rgba(0,120,220,.03);
+  --ems-sidebar-width: 220px;
+}
+
+// ─── LIGHT THEME TOKENS ──────────────────────────────────────────
+[data-theme="light"] {
+  --ems-bg-deepest:    #eef1f6;
+  --ems-bg-sidebar:    #ffffff;
+  --ems-bg-main:       #f4f6fa;
+  --ems-bg-card:       #ffffff;
+  --ems-bg-header:     #ffffff;
+  --ems-bg-modal:      #ffffff;
+
+  --ems-accent:        #0088cc;
+  --ems-accent-bright: #0066aa;
+  --ems-accent-glow:   rgba(0,136,204,.15);
+  --ems-accent-green:  #10b981;
+  --ems-accent-orange: #f97316;
+  --ems-accent-red:    #ef4444;
+  --ems-accent-yellow: #f59e0b;
+
+  --ems-text-primary:   #1e293b;
+  --ems-text-secondary: #475569;
+  --ems-text-muted:     #94a3b8;
+  --ems-text-accent:    #0088cc;
+
+  --ems-border-dim:    rgba(0,0,0,.08);
+  --ems-border-mid:    rgba(0,136,204,.25);
+  --ems-border-bright: rgba(0,136,204,.50);
+
+  --ems-grid-color:    transparent;
+  --ems-sidebar-width: 220px;
+}
+
+// ─── SCSS LEGACY VARIABLES (kept for backwards compatibility) ────
+$blue:               #324157;
+$light-blue:         #3A71A8;
+$red:                #C03639;
+$pink:               #E65D6E;
+$green:              #30B08F;
+$tiffany:            #4AB7BD;
+$yellow:             #FEC171;
+$panGreen:           #30B08F;
+$--color-primary:    #00aaff;
+$base-sidebar-width: 220px;
+
+// ─── JS EXPORT (for Sidebar/index.vue inline :style) ─────────────
+:export {
+  menuBackground:      #060d20;
+  menuLightBackground: #ffffff;
+  sideBarWidth:        220px;
+  primaryColor:        #00aaff;
+}

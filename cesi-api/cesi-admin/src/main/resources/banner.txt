@@ -1,0 +1,2 @@
+﻿Application Version: ${cesi.version}
+Spring Boot Version: ${spring-boot.version}

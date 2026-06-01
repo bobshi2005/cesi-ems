@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesi.pcf.mapper.EmspcfCategoryMapper">
+
+    <resultMap type="com.cesi.pcf.domain.EmspcfCategory" id="CategoryResult">
+        <result property="id"           column="id"/>
+        <result property="parentId"     column="parent_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="categoryCode" column="category_code"/>
+        <result property="orderNum"     column="order_num"/>
+        <result property="status"       column="status"/>
+        <result property="remark"       column="remark"/>
+        <result property="createBy"     column="create_by"/>
+        <result property="createTime"   column="create_time"/>
+        <result property="updateBy"     column="update_by"/>
+        <result property="updateTime"   column="update_time"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="CategoryResult">
+        SELECT id, parent_id, category_name, category_code, order_num, status, remark,
+               create_by, create_time, update_by, update_time
+        FROM ems_pcf_category
+        ORDER BY order_num ASC, id ASC
+    </select>
+
+    <select id="countProductsByCategoryId" resultType="int">
+        SELECT COUNT(1) FROM ems_pcf_product WHERE category_id = #{categoryId}
+    </select>
+
+</mapper>

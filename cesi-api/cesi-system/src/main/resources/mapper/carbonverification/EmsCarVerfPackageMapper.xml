@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesi.carbonverification.mapper.EmsCarVerfPackageMapper">
+
+    <resultMap type="com.cesi.carbonverification.domain.EmsCarVerfPackage" id="PackageResult">
+        <result property="id"               column="id"/>
+        <result property="packageName"      column="package_name"/>
+        <result property="packageYear"      column="package_year"/>
+        <result property="verifyOrg"        column="verify_org"/>
+        <result property="includeReport"    column="include_report"/>
+        <result property="includeActivity"  column="include_activity"/>
+        <result property="includeVoucher"   column="include_voucher"/>
+        <result property="includeFactor"    column="include_factor"/>
+        <result property="fileCount"        column="file_count"/>
+        <result property="fileSize"         column="file_size"/>
+        <result property="filePath"         column="file_path"/>
+        <result property="completenessRate" column="completeness_rate"/>
+        <result property="missingDesc"      column="missing_desc"/>
+        <result property="status"           column="status"/>
+        <result property="createBy"         column="create_by"/>
+        <result property="createTime"       column="create_time"/>
+        <result property="updateBy"         column="update_by"/>
+        <result property="updateTime"       column="update_time"/>
+        <result property="remark"           column="remark"/>
+    </resultMap>
+
+    <select id="selectPage" resultMap="PackageResult">
+        SELECT id, package_name, package_year, verify_org,
+               include_report, include_activity, include_voucher, include_factor,
+               file_count, file_size, file_path, completeness_rate, missing_desc, status,
+               create_by, create_time, update_by, update_time, remark
+        FROM ems_carbon_verification_package
+        <where>
+            <if test="packageYear != null">AND package_year = #{packageYear}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

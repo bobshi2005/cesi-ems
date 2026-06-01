@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesi.pcf.mapper.EmspcfManufacturingMapper">
+
+    <resultMap type="com.cesi.pcf.domain.EmspcfManufacturing" id="MfgResult">
+        <result property="id"               column="id"/>
+        <result property="productId"        column="product_id"/>
+        <result property="year"             column="year"/>
+        <result property="emissionSource"   column="emission_source"/>
+        <result property="activityType"     column="activity_type"/>
+        <result property="activityValue"    column="activity_value"/>
+        <result property="unit"             column="unit"/>
+        <result property="statPeriodStart"  column="stat_period_start"/>
+        <result property="statPeriodEnd"    column="stat_period_end"/>
+        <result property="productionVolume" column="production_volume"/>
+        <result property="productionUnit"   column="production_unit"/>
+        <result property="carbonValue"      column="carbon_value"/>
+        <result property="carbonUnit"       column="carbon_unit"/>
+        <result property="remark"           column="remark"/>
+        <result property="createBy"         column="create_by"/>
+        <result property="createTime"       column="create_time"/>
+        <result property="updateBy"         column="update_by"/>
+        <result property="updateTime"       column="update_time"/>
+    </resultMap>
+
+    <select id="selectByProductAndYear" resultMap="MfgResult">
+        SELECT * FROM ems_pcf_manufacturing
+        WHERE product_id = #{productId} AND year = #{year}
+        ORDER BY id ASC
+    </select>
+
+    <select id="sumByProductAndYear" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(carbon_value) / 1000, 0)
+        FROM ems_pcf_manufacturing
+        WHERE product_id = #{productId} AND year = #{year}
+    </select>
+
+</mapper>

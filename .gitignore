@@ -1,0 +1,83 @@
+﻿######################################################################
+# Build Tools
+
+.gradle
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+######################################################################
+# IDE
+.DS_Store
+/.DS_Store
+cesi-admin/.DS_Store
+cesi-admin/src/.DS_Store
+cesi-system/.DS_Store
+cesi-system/src/.DS_Store
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### JRebel ###
+rebel.xml
+
+### NetBeans ###
+nbproject/private/
+build/*
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+######################################################################
+# Others
+*.log
+*.xml.versionsBackup
+*.swp
+
+!*/build/*.java
+!*/build/*.html
+!*/build/*.xml
+
+*/.DS_Store
+
+### VS Code ###
+.vscode/
+
+uploadPath
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+######################################################################
+# Local environment (added by sanitize-for-release.ps1)
+.env
+.env.file
+.env.local
+.env.*.local
+!.env.example
+
+# Local upload directory
+uploadPath/
+**/uploadPath/
+
+# Frontend build output
+cesi-web/dist/

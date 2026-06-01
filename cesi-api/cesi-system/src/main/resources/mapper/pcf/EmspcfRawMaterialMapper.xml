@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesi.pcf.mapper.EmspcfRawMaterialMapper">
+
+    <resultMap type="com.cesi.pcf.domain.EmspcfRawMaterial" id="RawMaterialResult">
+        <result property="id"             column="id"/>
+        <result property="productId"      column="product_id"/>
+        <result property="year"           column="year"/>
+        <result property="materialName"   column="material_name"/>
+        <result property="specModel"      column="spec_model"/>
+        <result property="quantity"       column="quantity"/>
+        <result property="unit"           column="unit"/>
+        <result property="emissionFactor" column="emission_factor"/>
+        <result property="factorUnit"     column="factor_unit"/>
+        <result property="emissionAmount" column="emission_amount"/>
+        <result property="emissionUnit"   column="emission_unit"/>
+        <result property="dataSource"     column="data_source"/>
+        <result property="remark"         column="remark"/>
+        <result property="createBy"       column="create_by"/>
+        <result property="createTime"     column="create_time"/>
+        <result property="updateBy"       column="update_by"/>
+        <result property="updateTime"     column="update_time"/>
+    </resultMap>
+
+    <select id="selectByProductAndYear" resultMap="RawMaterialResult">
+        SELECT * FROM ems_pcf_raw_material
+        WHERE product_id = #{productId} AND year = #{year}
+        ORDER BY id ASC
+    </select>
+
+    <select id="sumByProductAndYear" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(emission_amount), 0)
+        FROM ems_pcf_raw_material
+        WHERE product_id = #{productId} AND year = #{year}
+    </select>
+
+</mapper>

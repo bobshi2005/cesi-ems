@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesi.energybudget.mapper.EmsEnergyBudgetMapper">
+
+    <resultMap type="com.cesi.energybudget.domain.EmsEnergyBudget" id="EmsEnergyBudgetResult">
+        <result property="id"                     column="id"/>
+        <result property="budgetName"             column="budget_name"/>
+        <result property="budgetType"             column="budget_type"/>
+        <result property="budgetYear"             column="budget_year"/>
+        <result property="budgetMonth"            column="budget_month"/>
+        <result property="budgetStart"            column="budget_start"/>
+        <result property="budgetEnd"              column="budget_end"/>
+        <result property="energyType"             column="energy_type"/>
+        <result property="energyUnit"             column="energy_unit"/>
+        <result property="regionType"             column="region_type"/>
+        <result property="regionName"             column="region_name"/>
+        <result property="unitConsumption"        column="unit_consumption"/>
+        <result property="unitConsumptionSource"  column="unit_consumption_source"/>
+        <result property="planQuantity"           column="plan_quantity"/>
+        <result property="planQuantityUnit"       column="plan_quantity_unit"/>
+        <result property="budgetEnergy"           column="budget_energy"/>
+        <result property="warningThreshold"       column="warning_threshold"/>
+        <result property="status"                 column="status"/>
+        <result property="nodeId"                 column="node_id"/>
+        <result property="createBy"               column="create_by"/>
+        <result property="createTime"             column="create_time"/>
+        <result property="updateBy"               column="update_by"/>
+        <result property="updateTime"             column="update_time"/>
+        <result property="remark"                 column="remark"/>
+    </resultMap>
+
+    <select id="pageByCondition" resultMap="EmsEnergyBudgetResult">
+        SELECT id, budget_name, budget_type, budget_year, budget_month,
+               budget_start, budget_end, energy_type, energy_unit,
+               region_type, region_name, unit_consumption, unit_consumption_source,
+               plan_quantity, plan_quantity_unit, budget_energy, warning_threshold,
+               status, node_id, create_by, create_time, update_by, update_time, remark
+        FROM ems_energy_budget
+        <where>
+            <if test="budgetType  != null and budgetType  != ''">AND budget_type  = #{budgetType}</if>
+            <if test="budgetYear  != null">AND budget_year  = #{budgetYear}</if>
+            <if test="budgetMonth != null">AND budget_month = #{budgetMonth}</if>
+            <if test="regionType  != null and regionType  != ''">AND region_type  = #{regionType}</if>
+            <if test="regionName  != null and regionName  != ''">AND region_name LIKE CONCAT('%',#{regionName},'%')</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

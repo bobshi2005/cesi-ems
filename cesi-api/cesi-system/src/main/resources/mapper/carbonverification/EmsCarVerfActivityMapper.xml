@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesi.carbonverification.mapper.EmsCarVerfActivityMapper">
+
+    <resultMap type="com.cesi.carbonverification.domain.EmsCarVerfActivity" id="ActivityResult">
+        <result property="id"             column="id"/>
+        <result property="year"           column="year"/>
+        <result property="month"          column="month"/>
+        <result property="orgUnit"        column="org_unit"/>
+        <result property="emissionSource" column="emission_source"/>
+        <result property="emissionType"   column="emission_type"/>
+        <result property="dataMethod"     column="data_method"/>
+        <result property="unit"           column="unit"/>
+        <result property="activityValue"  column="activity_value"/>
+        <result property="emissionFactor" column="emission_factor"/>
+        <result property="factorSource"   column="factor_source"/>
+        <result property="emissionAmount" column="emission_amount"/>
+        <result property="isEstimated"    column="is_estimated"/>
+        <result property="createBy"       column="create_by"/>
+        <result property="createTime"     column="create_time"/>
+        <result property="updateBy"       column="update_by"/>
+        <result property="updateTime"     column="update_time"/>
+        <result property="remark"         column="remark"/>
+    </resultMap>
+
+    <sql id="selectCols">
+        id, year, month, org_unit, emission_source, emission_type, data_method,
+        unit, activity_value, emission_factor, factor_source, emission_amount, is_estimated,
+        create_by, create_time, update_by, update_time, remark
+    </sql>
+
+    <select id="selectPage" resultMap="ActivityResult">
+        SELECT <include refid="selectCols"/>
+        FROM ems_carbon_verification_activity
+        <where>
+            <if test="year != null">AND year = #{year}</if>
+            <if test="orgUnit != null and orgUnit != ''">AND org_unit = #{orgUnit}</if>
+            <if test="emissionSource != null and emissionSource != ''">
+                AND emission_source LIKE CONCAT('%', #{emissionSource}, '%')
+            </if>
+        </where>
+        ORDER BY emission_source, month
+    </select>
+
+    <select id="selectByYearAndSource" resultMap="ActivityResult">
+        SELECT <include refid="selectCols"/>
+        FROM ems_carbon_verification_activity
+        WHERE year = #{year}
+        <if test="orgUnit != null and orgUnit != ''">AND org_unit = #{orgUnit}</if>
+        <if test="emissionSource != null and emissionSource != ''">AND emission_source = #{emissionSource}</if>
+        ORDER BY month
+    </select>
+
+    <select id="selectByYear" resultMap="ActivityResult">
+        SELECT <include refid="selectCols"/>
+        FROM ems_carbon_verification_activity
+        WHERE year = #{year}
+        <if test="orgUnit != null and orgUnit != ''">AND org_unit = #{orgUnit}</if>
+        ORDER BY emission_source, month
+    </select>
+
+    <select id="selectAnnualSummary" resultMap="ActivityResult">
+        SELECT emission_source, emission_type, unit, factor_source,
+               SUM(activity_value)  AS activity_value,
+               AVG(emission_factor) AS emission_factor,
+               SUM(emission_amount) AS emission_amount
+        FROM ems_carbon_verification_activity
+        WHERE year = #{year}
+        <if test="orgUnit != null and orgUnit != ''">AND org_unit = #{orgUnit}</if>
+        GROUP BY emission_source, emission_type, unit, factor_source
+        ORDER BY emission_source
+    </select>
+
+
+    <resultMap type="com.cesi.carbonverification.domain.vo.ActivitySourceVO" id="SourceVOResult">
+        <result property="emissionSource"       column="emission_source"/>
+        <result property="emissionType"         column="emission_type"/>
+        <result property="dataMethod"           column="data_method"/>
+        <result property="unit"                 column="unit"/>
+        <result property="annualActivityValue"  column="annual_activity_value"/>
+        <result property="emissionFactor"       column="emission_factor"/>
+        <result property="factorSource"         column="factor_source"/>
+        <result property="annualEmissionAmount" column="annual_emission_amount"/>
+        <result property="month1Value"          column="month1_value"/>
+        <result property="month1Factor"         column="month1_factor"/>
+        <result property="month2Value"          column="month2_value"/>
+    </resultMap>
+
+    <select id="selectSourceList" resultMap="SourceVOResult">
+        SELECT
+            emission_source,
+            emission_type,
+            MAX(data_method)                                       AS data_method,
+            MAX(unit)                                              AS unit,
+            SUM(activity_value)                                    AS annual_activity_value,
+            AVG(emission_factor)                                   AS emission_factor,
+            MAX(factor_source)                                     AS factor_source,
+            SUM(emission_amount)                                   AS annual_emission_amount,
+            MAX(CASE WHEN month = 1 THEN activity_value END)       AS month1_value,
+            MAX(CASE WHEN month = 1 THEN emission_factor END)      AS month1_factor,
+            MAX(CASE WHEN month = 2 THEN activity_value END)       AS month2_value
+        FROM ems_carbon_verification_activity
+        WHERE year = #{year}
+        <if test="orgUnit != null and orgUnit != ''">AND org_unit = #{orgUnit}</if>
+        GROUP BY emission_source, emission_type
+        ORDER BY emission_source
+    </select>
+
+    <select id="selectOneByKey" resultMap="ActivityResult">
+        SELECT <include refid="selectCols"/>
+        FROM ems_carbon_verification_activity
+        WHERE year = #{year} AND month = #{month}
+          AND emission_source = #{emissionSource}
+          AND org_unit = #{orgUnit}
+        LIMIT 1
+    </select>
+
+</mapper>

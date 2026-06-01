@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesi.pcf.mapper.EmspcfGreenCertFactorMapper">
+
+    <resultMap type="com.cesi.pcf.domain.EmspcfGreenCertFactor" id="GreenCertFactorResult">
+        <result property="id"                column="id"/>
+        <result property="certType"          column="cert_type"/>
+        <result property="powerType"         column="power_type"/>
+        <result property="emissionFactor"    column="emission_factor"/>
+        <result property="factorUnit"        column="factor_unit"/>
+        <result property="referenceStandard" column="reference_standard"/>
+        <result property="applicableRegion"  column="applicable_region"/>
+        <result property="referenceYear"     column="reference_year"/>
+        <result property="status"            column="status"/>
+        <result property="remark"            column="remark"/>
+        <result property="createBy"          column="create_by"/>
+        <result property="createTime"        column="create_time"/>
+        <result property="updateBy"          column="update_by"/>
+        <result property="updateTime"        column="update_time"/>
+    </resultMap>
+
+    <select id="selectAllEnabled" resultMap="GreenCertFactorResult">
+        SELECT * FROM ems_pcf_green_cert_factor
+        WHERE status = '0'
+        ORDER BY id ASC
+    </select>
+
+</mapper>

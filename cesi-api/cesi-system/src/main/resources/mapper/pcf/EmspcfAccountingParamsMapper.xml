@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesi.pcf.mapper.EmspcfAccountingParamsMapper">
+
+    <resultMap type="com.cesi.pcf.domain.EmspcfAccountingParams" id="ParamResult">
+        <result property="id"          column="id"/>
+        <result property="paramKey"    column="param_key"/>
+        <result property="paramValue"  column="param_value"/>
+        <result property="paramType"   column="param_type"/>
+        <result property="paramLabel"  column="param_label"/>
+        <result property="remark"      column="remark"/>
+        <result property="createBy"    column="create_by"/>
+        <result property="createTime"  column="create_time"/>
+        <result property="updateBy"    column="update_by"/>
+        <result property="updateTime"  column="update_time"/>
+    </resultMap>
+
+    <insert id="upsertParam" parameterType="com.cesi.pcf.domain.EmspcfAccountingParams">
+        INSERT INTO ems_pcf_accounting_params (param_key, param_value, param_type, param_label,
+                                               update_by, update_time)
+        VALUES (#{paramKey}, #{paramValue}, #{paramType}, #{paramLabel},
+                #{updateBy}, #{updateTime})
+        ON CONFLICT (param_key) DO UPDATE SET
+            param_value  = EXCLUDED.param_value,
+            update_by    = EXCLUDED.update_by,
+            update_time  = EXCLUDED.update_time
+    </insert>
+
+</mapper>

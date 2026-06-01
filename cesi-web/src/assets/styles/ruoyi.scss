@@ -1,0 +1,117 @@
+/**
+ * 通用 CSS 样式 — token 化版本
+ */
+
+// ─── 间距工具 ────────────────────────────────────────────────────
+.pt5  { padding-top: 5px; }
+.pr5  { padding-right: 5px; }
+.pb5  { padding-bottom: 5px; }
+.mt5  { margin-top: 5px; }
+.mr5  { margin-right: 5px; }
+.mb5  { margin-bottom: 5px; }
+.mb8  { margin-bottom: 8px; }
+.ml5  { margin-left: 5px; }
+.mt10 { margin-top: 10px; }
+.mr10 { margin-right: 10px; }
+.mb10 { margin-bottom: 10px; }
+.ml10 { margin-left: 10px; }
+.mt20 { margin-top: 20px; }
+.mr20 { margin-right: 20px; }
+.mb20 { margin-bottom: 20px; }
+.ml20 { margin-left: 20px; }
+
+// ─── 标题 ────────────────────────────────────────────────────────
+.h1,.h2,.h3,.h4,.h5,.h6,
+h1,h2,h3,h4,h5,h6 {
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
+}
+
+// ─── 表单布局 ────────────────────────────────────────────────────
+.form-header {
+  font-size: 15px;
+  color: var(--ems-text-muted);
+  border-bottom: 1px solid var(--ems-border-dim);
+  margin: 8px 10px 25px 10px;
+  padding-bottom: 5px;
+}
+
+// ─── 表格布局 ────────────────────────────────────────────────────
+.el-dialog .pagination-container { position: static !important; }
+.pagination-container .el-pagination { right: 20px; position: absolute; }
+
+@media (max-width: 768px) {
+  .pagination-container .el-pagination > .el-pagination__jump,
+  .pagination-container .el-pagination > .el-pagination__sizes { display: none !important; }
+}
+
+.el-table .fixed-width .el-button--small { padding-left: 0; padding-right: 0; width: inherit; }
+.el-table .el-dropdown-link { cursor: pointer; color: var(--ems-accent); margin-left: 10px; }
+.el-table .el-dropdown, .el-icon-arrow-down { font-size: 12px; }
+
+// ─── 树边框 ──────────────────────────────────────────────────────
+.tree-border {
+  margin-top: 5px;
+  border: 1px solid var(--ems-border-dim);
+  background: transparent;
+  border-radius: 4px;
+  width: 100%;
+}
+
+// ─── 卡片 ────────────────────────────────────────────────────────
+.card-box { padding-right: 15px; padding-left: 15px; margin-bottom: 10px; }
+
+// ─── 按钮颜色扩展 ────────────────────────────────────────────────
+.el-button--cyan.is-active,
+.el-button--cyan:active  { background: #20b2aa; border-color: #20b2aa; color: #fff; }
+.el-button--cyan:focus,
+.el-button--cyan:hover   { background: #48d1cc; border-color: #48d1cc; color: #fff; }
+.el-button--cyan         { background-color: #20b2aa; border-color: #20b2aa; color: #fff; }
+
+// ─── 文字颜色 ────────────────────────────────────────────────────
+.text-navy    { color: #1ab394; }
+.text-primary { color: inherit; }
+.text-success { color: var(--ems-accent-green); }
+.text-info    { color: var(--ems-text-secondary); }
+.text-warning { color: var(--ems-accent-orange); }
+.text-danger  { color: var(--ems-accent-red); }
+.text-muted   { color: var(--ems-text-muted); }
+
+// ─── 图片 ────────────────────────────────────────────────────────
+.img-circle { border-radius: 50%; }
+.img-lg { width: 120px; height: 120px; }
+.avatar-upload-preview {
+  position: absolute; top: 50%;
+  transform: translate(50%, -50%);
+  width: 200px; height: 200px;
+  border-radius: 50%; box-shadow: 0 0 4px #ccc; overflow: hidden;
+}
+
+// ─── 拖拽 ────────────────────────────────────────────────────────
+.sortable-ghost { opacity: .8; color: #fff !important; background: #42b983 !important; }
+
+// ─── 工具栏 ──────────────────────────────────────────────────────
+.top-right-btn { margin-left: auto; }
+
+// ─── list-group ──────────────────────────────────────────────────
+.list-group-striped > .list-group-item {
+  border-left: 0; border-right: 0; border-radius: 0; padding-left: 0; padding-right: 0;
+}
+.list-group { padding-left: 0; list-style: none; }
+.list-group-item {
+  border-bottom: 1px solid var(--ems-border-dim);
+  border-top: 1px solid var(--ems-border-dim);
+  margin-bottom: -1px;
+  padding: 11px 0;
+  font-size: 13px;
+  color: var(--ems-text-primary);
+}
+.pull-right { float: right !important; }
+
+// ─── 弹窗内可滚动 ────────────────────────────────────────────────
+.el-dialog.scrollbar .el-dialog__body {
+  overflow: auto; overflow-x: hidden; max-height: 70vh; padding: 10px 20px 0;
+}
+.el-dialog:not(.is-fullscreen) { margin-top: 6vh !important; }

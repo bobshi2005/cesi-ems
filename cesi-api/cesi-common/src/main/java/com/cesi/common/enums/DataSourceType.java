@@ -1,0 +1,19 @@
+package com.cesi.common.enums;
+
+/**
+ * 数据源
+ * 
+ * @author cesi
+ */
+public enum DataSourceType
+{
+    /**
+     * 主库
+     */
+    MASTER,
+
+    /**
+     * 从库
+     */
+    SLAVE
+}

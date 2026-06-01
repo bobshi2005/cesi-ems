@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesi.budget.mapper.BudgetAnalysisMapper">
+
+    <resultMap id="MonthlyActualResult" type="com.cesi.budget.domain.vo.MonthlyActualVO">
+        <result property="month"       column="month"/>
+        <result property="actualValue" column="actual_value"/>
+    </resultMap>
+
+    <!--
+        全年实际能耗：汇总该节点下所有计量点当年各月 MONTH 记录。
+        数据链路：node_point.node_id → energy_used.point_id（time_type='MONTH'）
+    -->
+    <select id="getYearActualByNode" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(eu.value), 0)
+        FROM energy_used eu
+        WHERE eu.time_type = 'MONTH'
+          AND eu.point_id IN (
+              SELECT np.point_id FROM node_point np WHERE np.node_id = #{nodeId}
+          )
+          AND EXTRACT(YEAR FROM eu.data_time) = #{year}
+    </select>
+
+    <!-- 某月实际能耗 -->
+    <select id="getMonthActualByNode" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(eu.value), 0)
+        FROM energy_used eu
+        WHERE eu.time_type = 'MONTH'
+          AND eu.point_id IN (
+              SELECT np.point_id FROM node_point np WHERE np.node_id = #{nodeId}
+          )
+          AND EXTRACT(YEAR  FROM eu.data_time) = #{year}
+          AND EXTRACT(MONTH FROM eu.data_time) = #{month}
+    </select>
+
+    <!-- 全年各月明细（趋势图用） -->
+    <select id="getMonthlyActualsByNode" resultMap="MonthlyActualResult">
+        SELECT
+            EXTRACT(MONTH FROM eu.data_time)::INTEGER AS month,
+            COALESCE(SUM(eu.value), 0)                AS actual_value
+        FROM energy_used eu
+        WHERE eu.time_type = 'MONTH'
+          AND eu.point_id IN (
+              SELECT np.point_id FROM node_point np WHERE np.node_id = #{nodeId}
+          )
+          AND EXTRACT(YEAR FROM eu.data_time) = #{year}
+        GROUP BY EXTRACT(MONTH FROM eu.data_time)
+        ORDER BY month ASC
+    </select>
+
+</mapper>
