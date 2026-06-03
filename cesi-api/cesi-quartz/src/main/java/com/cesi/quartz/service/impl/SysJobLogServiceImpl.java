@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.cesi.quartz.mapper.SysJobLogMapper;
 import com.cesi.quartz.service.ISysJobLogService;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import com.cesi.quartz.domain.SysJobLog;
 

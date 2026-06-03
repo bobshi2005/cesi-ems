@@ -1,5 +1,6 @@
 package com.cesi.web.controller.spikesandvalleys;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.common.core.domain.model.LoginUser;
 import com.cesi.common.core.page.TableDataInfo;
@@ -9,7 +10,6 @@ import com.cesi.spikesandvalleys.domain.SpikesAndValleysScheme;
 import com.cesi.spikesandvalleys.domain.vo.SpikesAndValleysSchemeVo;
 import com.cesi.spikesandvalleys.service.ISpikesAndValleysSchemeService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,12 +32,13 @@ import com.cesi.common.enums.BusinessType;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "尖峰平谷时间段明细")
 @RequestMapping("/system/scheme")
 public class SpikesAndValleysSchemeController extends BaseController
 {
+    @Autowired
     private ISpikesAndValleysSchemeService spikesAndValleysSchemeService;
+    @Autowired
     private TokenService tokenService;
 
     /**

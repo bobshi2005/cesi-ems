@@ -1,5 +1,6 @@
 package com.cesi.web.controller.auxiliaryinput;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
@@ -10,12 +11,11 @@ import com.cesi.common.utils.poi.ExcelUtil;
 import com.cesi.energyIndicators.domain.EnergyIndicators;
 import com.cesi.energyIndicators.service.IEnergyIndicatorsService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,12 +25,12 @@ import java.util.UUID;
  * @author cesi
  */
 @RestController
-@AllArgsConstructor
 @Api(tags = "能源指标录入")
 @RequestMapping("/energyIndicators")
 public class EnergyIndicatorsController extends BaseController
 {
     @Resource
+    @Autowired
     private IEnergyIndicatorsService energyIndicatorsService;
 
     /**

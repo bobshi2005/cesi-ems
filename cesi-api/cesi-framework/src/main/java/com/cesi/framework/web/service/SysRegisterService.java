@@ -2,7 +2,7 @@ package com.cesi.framework.web.service;
 
 import com.cesi.framework.manager.AsyncManager;
 import com.cesi.framework.manager.factory.AsyncFactory;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import com.cesi.common.constant.CacheConstants;
 import com.cesi.common.constant.Constants;

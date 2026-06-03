@@ -1,6 +1,6 @@
 package com.cesi.generator.domain;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import com.cesi.common.core.domain.BaseEntity;
 import com.cesi.common.utils.StringUtils;
 

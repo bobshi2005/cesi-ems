@@ -2,14 +2,13 @@ package com.cesi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 /**
  * 启动程序
- * 
+ *
  * @author cesi
  */
-@SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
+@SpringBootApplication
 public class AdminApplication
 {
     public static void main(String[] args)

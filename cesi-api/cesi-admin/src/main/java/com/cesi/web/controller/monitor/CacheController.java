@@ -1,5 +1,7 @@
 package com.cesi.web.controller.monitor;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,11 +28,13 @@ import com.cesi.system.domain.SysCache;
  * 
  * @author cesi
  */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/monitor/cache")
 public class CacheController
 {
     @Resource
+    @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
     private final static List<SysCache> caches = new ArrayList<SysCache>();

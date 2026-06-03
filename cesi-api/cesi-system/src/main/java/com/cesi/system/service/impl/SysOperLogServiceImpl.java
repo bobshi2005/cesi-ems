@@ -10,7 +10,7 @@ import com.cesi.system.mapper.SysOperLogMapper;
 import com.cesi.system.service.ISysOperLogService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 /**

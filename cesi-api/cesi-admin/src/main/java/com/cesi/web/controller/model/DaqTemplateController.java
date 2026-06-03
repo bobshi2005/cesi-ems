@@ -10,7 +10,6 @@ import com.cesi.common.utils.poi.ExcelUtil;
 import com.cesi.model.domain.PointTemplate;
 import com.cesi.model.service.IPointTemplateService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +24,6 @@ import java.util.UUID;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "采集参数模板管理")
 @RequestMapping("/system/template")
 public class DaqTemplateController extends BaseController {

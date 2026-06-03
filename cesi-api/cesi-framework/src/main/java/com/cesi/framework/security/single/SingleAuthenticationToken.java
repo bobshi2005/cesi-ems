@@ -10,7 +10,7 @@ public class SingleAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
 
     public SingleAuthenticationToken(Object principal) {
-        super(null);
+        super((java.util.Collection<? extends org.springframework.security.core.GrantedAuthority>) null);
         this.principal = principal;
         this.setAuthenticated(false);
     }

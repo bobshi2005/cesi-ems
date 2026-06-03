@@ -11,7 +11,6 @@ import com.cesi.home.domain.vo.HomePeakValleyVO;
 import com.cesi.home.service.impl.IHomePageService;
 import com.cesi.peakvalley.domain.dto.PeakValleyDTO;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,13 +25,13 @@ import java.util.List;
  * @author cesi
  */
 @RestController
-@AllArgsConstructor
 @Api(tags = "能源数据综合分析")
 @RequestMapping("/energydatahomepage")
 @Anonymous
 public class EnergyDataStatisticsController extends BaseController
 {
     public IHomePageService homepageService;
+    @Autowired
     private IEnergyDataStatisticService statisticService;
 
     /**

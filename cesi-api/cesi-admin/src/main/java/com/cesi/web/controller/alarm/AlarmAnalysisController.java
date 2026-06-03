@@ -6,7 +6,6 @@ import com.cesi.alarm.services.IAlarmAnalysisService;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
 * description 报警分析相关功能
@@ -22,12 +21,12 @@ import javax.annotation.Resource;
  * @author cesi
  */
 @RestController
-@AllArgsConstructor
 @Api(tags = "报警分析相关功能")
 @RequestMapping("/alarmAnalysis")
 public class AlarmAnalysisController extends BaseController {
 
     @Resource
+    @Autowired
     private IAlarmAnalysisService alarmAnalysisService;
 
     @GetMapping("/getByNodeId")

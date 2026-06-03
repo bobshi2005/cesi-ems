@@ -1,6 +1,7 @@
 package com.cesi.web.controller.alarm;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.alarm.domain.HistoryTable;
 import com.cesi.alarm.domain.JkHistoryAlarm;
 import com.cesi.alarm.services.IAlarmHistoryService;
@@ -14,7 +15,6 @@ import com.cesi.realtimedata.domain.TagValue;
 import com.cesi.realtimedata.service.RealtimeDatabaseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,11 +35,12 @@ import java.util.List;
  * @author cesi
  */
 @RestController
-@AllArgsConstructor
 @Api(value = "报警检测—历史报警检测", tags = {"报警检测"})
 @RequestMapping("/energyAlarm/historicalAlarm")
 public class AlarmHistoryController extends BaseController {
+    @Autowired
     private IAlarmHistoryService historyAlarmService;
+    @Autowired
     private RealtimeDatabaseService realtimeDatabaseService;
 
     /**

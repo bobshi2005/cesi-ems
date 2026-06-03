@@ -22,7 +22,7 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
      * 构建一个没有鉴权的构造函数
      */
     public SmsCodeAuthenticationToken(Object principal) {
-        super(null);
+        super((java.util.Collection<? extends org.springframework.security.core.GrantedAuthority>) null);
         this.principal = principal;
         setAuthenticated(false);
     }

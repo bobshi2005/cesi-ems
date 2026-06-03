@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.cesi.generator.domain.GenTableColumn;
 import com.cesi.generator.mapper.GenTableColumnMapper;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import com.cesi.common.core.text.Convert;
 

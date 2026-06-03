@@ -1,5 +1,6 @@
 package com.cesi.web.controller.processenergy;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
 import com.cesi.model.domain.ModelNode;
@@ -10,7 +11,6 @@ import com.cesi.processenergy.service.IDailyProcessEnergyService;
 import com.cesi.realtimedata.domain.dto.EnergyUsedDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +29,13 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(value = "工序能耗统计（日）", tags = {"工序能耗统计"})
 @RequestMapping("/processEnergy/dailyProcessEnergy")
 public class DailyProcessEnergyController extends BaseController {
 
+    @Autowired
     private IModelNodeService modelNodeService;
+    @Autowired
     private IDailyProcessEnergyService dailyProcessEnergy;
 
     @GetMapping("/list")

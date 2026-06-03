@@ -3,10 +3,10 @@ package com.cesi.framework.web.service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.cesi.common.constant.CacheConstants;
@@ -21,7 +21,9 @@ import com.cesi.common.utils.uuid.IdUtils;
 import eu.bitwalker.useragentutils.UserAgent;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 
 /**
  * token验证处理
@@ -173,12 +175,16 @@ public class TokenService
      * @param claims 数据声明
      * @return 令牌
      */
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
     private String createToken(Map<String, Object> claims)
     {
-        String token = Jwts.builder()
-                .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS512, secret).compact();
-        return token;
+        return Jwts.builder()
+                .claims(claims)
+                .signWith(getSigningKey())
+                .compact();
     }
 
     /**
@@ -190,9 +196,10 @@ public class TokenService
     private Claims parseToken(String token)
     {
         return Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody();
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     /**

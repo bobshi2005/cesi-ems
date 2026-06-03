@@ -1,5 +1,6 @@
 package com.cesi.web.controller.system;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
@@ -15,8 +16,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +31,11 @@ import java.util.List;
 public class SysDictDataController extends BaseController
 {
     @Resource
+    @Autowired
     private ISysDictDataService dictDataService;
 
     @Resource
+    @Autowired
     private ISysDictTypeService dictTypeService;
 
     @PreAuthorize("@ss.hasPermi('system:dict:list')")

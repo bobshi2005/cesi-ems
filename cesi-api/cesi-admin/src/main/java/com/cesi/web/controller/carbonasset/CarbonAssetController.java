@@ -1,5 +1,6 @@
 package com.cesi.web.controller.carbonasset;
 
+import lombok.RequiredArgsConstructor;
 import com.cesi.carbonasset.domain.vo.CarbonAssetPageVO;
 import com.cesi.carbonasset.domain.vo.CarbonAssetSaveDTO;
 import com.cesi.carbonasset.service.ICarbonAssetService;
@@ -9,12 +10,11 @@ import com.cesi.common.core.domain.AjaxResult;
 import com.cesi.common.enums.BusinessType;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
-@AllArgsConstructor
 @Api(tags = "碳资产管理")
 @RequestMapping("/carbonAsset")
 public class CarbonAssetController extends BaseController {

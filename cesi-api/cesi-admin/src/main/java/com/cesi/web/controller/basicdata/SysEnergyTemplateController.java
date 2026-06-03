@@ -1,5 +1,6 @@
 package com.cesi.web.controller.basicdata;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.basicdata.domain.SysEnergyTemplate;
 import com.cesi.basicdata.services.ISysEnergyTemplateService;
@@ -10,7 +11,6 @@ import com.cesi.common.core.page.TableDataInfo;
 import com.cesi.common.enums.BusinessType;
 import com.cesi.common.utils.poi.ExcelUtil;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +22,10 @@ import java.util.List;
  * @author cesi
  */
 @RestController
-@AllArgsConstructor
 @Api(value = "能源品种设置controller", tags = {"能源品种设置管理"})
 @RequestMapping("/enerInfoManage/enerclass")
 public class SysEnergyTemplateController extends BaseController {
+    @Autowired
     private ISysEnergyTemplateService sysEnerclassService;
 
     /**

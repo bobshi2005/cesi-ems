@@ -1,6 +1,7 @@
 package com.cesi.web.controller.system;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,9 +21,11 @@ import com.cesi.system.service.ISysConfigService;
 public class SysRegisterController extends BaseController
 {
     @Resource
+    @Autowired
     private SysRegisterService registerService;
 
     @Resource
+    @Autowired
     private ISysConfigService configService;
 
     @PostMapping("/register")

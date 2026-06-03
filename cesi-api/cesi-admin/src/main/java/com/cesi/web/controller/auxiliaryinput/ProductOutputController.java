@@ -1,5 +1,6 @@
 package com.cesi.web.controller.auxiliaryinput;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
@@ -10,12 +11,11 @@ import com.cesi.common.utils.poi.ExcelUtil;
 import com.cesi.productoutput.domain.ProductOutput;
 import com.cesi.productoutput.services.IProductOutputService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,10 +25,10 @@ import java.util.UUID;
  * @author cesi
  */
 @RestController
-@AllArgsConstructor
 @Api(tags = "产品产量录入")
 public class ProductOutputController extends BaseController {
 
+    @Autowired
     private IProductOutputService auxiliaryInputService;
 
     /**

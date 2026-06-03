@@ -1,5 +1,6 @@
 package com.cesi.web.controller.costmanagement;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
 import com.cesi.costmanagement.domain.vo.DeviationAnalysisDTO;
@@ -7,7 +8,6 @@ import com.cesi.costmanagement.domain.vo.ElectricityDataOutItem;
 import com.cesi.costmanagement.domain.vo.StatisticsDataOutItem;
 import com.cesi.costmanagement.service.DeviationAnalysisService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,10 +19,10 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "偏差分析")
 @RequestMapping("/cost/statistics")
 public class DeviationAnalysisController extends BaseController {
+    @Autowired
     private DeviationAnalysisService deviationAnalysisService;
 
     /**

@@ -17,22 +17,22 @@
         <cesi.version>2.5.2</cesi.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>21</java.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
-        <spring-framework.version>5.3.33</spring-framework.version>
-        <druid.version>1.2.20</druid.version>
+        <druid.version>1.2.28</druid.version>
         <bitwalker.version>1.21</bitwalker.version>
-        <swagger.version>3.0.0</swagger.version>
+        <springdoc.version>3.0.3</springdoc.version>
         <kaptcha.version>2.3.3</kaptcha.version>
         <pagehelper.version>6.1.0</pagehelper.version>
+        <pagehelper-spring-boot.version>2.1.1</pagehelper-spring-boot.version>
         <jsqlparser.version>4.9</jsqlparser.version>
         <fastjson.version>2.0.43</fastjson.version>
         <oshi.version>6.5.0</oshi.version>
         <commons.io.version>2.13.0</commons.io.version>
         <poi.version>4.1.2</poi.version>
         <velocity.version>2.3</velocity.version>
-        <jwt.version>0.9.1</jwt.version>
-        <mybatis-plus.version>3.5.6</mybatis-plus.version>
+        <jwt.version>0.13.0</jwt.version>
+        <mybatis-plus.version>3.5.15</mybatis-plus.version>
     </properties>
 
     <dependencies>
@@ -46,7 +46,7 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
@@ -56,7 +56,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>28.0-jre</version>
+            <version>33.2.1-jre</version>
         </dependency>
 
         <dependency>
@@ -85,23 +85,17 @@
             <artifactId>influxdb-client-java</artifactId>
             <version>3.4.0</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
+            <version>4.12.0</version>
             <exclusions>
                 <exclusion>
                     <artifactId>kotlin-stdlib</artifactId>
                     <groupId>org.jetbrains.kotlin</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>1.6.2</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- 阿里JSON解析器 -->
@@ -122,28 +116,26 @@
     <dependencyManagement>
         <dependencies>
 
-            <!-- SpringFramework的依赖配置-->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-framework-bom</artifactId>
-                <version>${spring-framework.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <!-- SpringBoot的依赖配置-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.5.15</version>
+                <version>4.0.6</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
 
-            <!-- 阿里数据库连接池 -->
+            <!-- Jackson 2 兼容模块（Spring Boot 4 升级到 Jackson 3，此模块提供向后兼容） -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-jackson2</artifactId>
+                <version>4.0.6</version>
+            </dependency>
+
+            <!-- 阿里数据库连接池（Spring Boot 3/4 专用版本） -->
             <dependency>
                 <groupId>com.alibaba</groupId>
-                <artifactId>druid-spring-boot-starter</artifactId>
+                <artifactId>druid-spring-boot-3-starter</artifactId>
                 <version>${druid.version}</version>
             </dependency>
 
@@ -156,7 +148,7 @@
 
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
 
@@ -164,6 +156,11 @@
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper</artifactId>
                 <version>${pagehelper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper-spring-boot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.jsqlparser</groupId>
@@ -178,17 +175,11 @@
                 <version>${oshi.version}</version>
             </dependency>
 
-            <!-- Swagger3依赖 -->
+            <!-- SpringDoc OpenAPI（替换 Springfox） -->
             <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-boot-starter</artifactId>
-                <version>${swagger.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>io.swagger</groupId>
-                        <artifactId>swagger-models</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
             </dependency>
 
             <!-- io常用工具类 -->
@@ -219,11 +210,23 @@
                 <version>${fastjson.version}</version>
             </dependency>
 
-            <!-- Token生成与解析-->
+            <!-- Token生成与解析（JJWT 0.13.x 拆分为三个构件） -->
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt</artifactId>
+                <artifactId>jjwt-api</artifactId>
                 <version>${jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jwt.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jwt.version}</version>
+                <scope>runtime</scope>
             </dependency>
 
             <!-- 验证码 -->
@@ -314,13 +317,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.13.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>${java.version}</release>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <parameters>true</parameters>
                     <compilerArgs>
-                        <!-- 过期的方法的警告-->
                         <arg>-Xlint:deprecation</arg>
                     </compilerArgs>
                 </configuration>

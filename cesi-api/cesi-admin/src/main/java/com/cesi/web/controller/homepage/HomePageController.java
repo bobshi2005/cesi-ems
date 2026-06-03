@@ -7,7 +7,6 @@ import com.cesi.home.domain.vo.HomeEnergyConsumptionTrendVO;
 import com.cesi.home.domain.vo.HomePeakValleyVO;
 import com.cesi.home.service.impl.IHomePageService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +22,6 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "首页")
 @RequestMapping("/homepage")
 public class HomePageController extends BaseController {

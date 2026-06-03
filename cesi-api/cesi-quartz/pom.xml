@@ -19,20 +19,21 @@
 
         <!-- 定时任务 -->
         <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.mchange</groupId>
-                    <artifactId>c3p0</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
 
         <!-- 通用工具-->
         <dependency>
             <groupId>com.cesi</groupId>
             <artifactId>cesi-common</artifactId>
+        </dependency>
+
+        <!-- servlet包（Jakarta EE 10） -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

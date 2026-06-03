@@ -24,7 +24,7 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;

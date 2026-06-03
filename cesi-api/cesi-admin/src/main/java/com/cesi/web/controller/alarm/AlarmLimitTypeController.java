@@ -1,5 +1,6 @@
 package com.cesi.web.controller.alarm;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.alarm.domain.AlarmLimitType;
 import com.cesi.alarm.services.IAlarmLimitTypeService;
@@ -13,7 +14,6 @@ import com.cesi.common.utils.ServletUtils;
 import com.cesi.framework.web.service.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +24,13 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-@AllArgsConstructor
 @Api(value = "报警限值类型管理",tags = {"报警限值类型管理"})
 @RequestMapping("/alarm/limit")
 public class AlarmLimitTypeController extends BaseController {
 
+    @Autowired
     private IAlarmLimitTypeService alarmLimitTypeService;
+    @Autowired
     private TokenService tokenService;
 
 

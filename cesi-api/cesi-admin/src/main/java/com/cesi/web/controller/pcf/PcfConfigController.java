@@ -1,5 +1,6 @@
 package com.cesi.web.controller.pcf;
 
+import lombok.RequiredArgsConstructor;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
@@ -10,14 +11,13 @@ import com.cesi.pcf.domain.EmspcfGreenCertFactor;
 import com.cesi.pcf.service.IPcfConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
-@AllArgsConstructor
 @Api(tags = "产品碳足迹-配置管理")
 @RequestMapping("/pcf/config")
 public class PcfConfigController extends BaseController {

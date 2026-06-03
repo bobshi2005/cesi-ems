@@ -1,5 +1,6 @@
 package com.cesi.web.controller.benchmarkmanage;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.benchmarkmanage.domain.Benchmark;
 import com.cesi.benchmarkmanage.service.IBenchmarkService;
@@ -14,12 +15,11 @@ import com.cesi.common.utils.StringUtils;
 import com.cesi.common.utils.poi.ExcelUtil;
 import com.cesi.framework.web.service.TokenService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,12 +30,13 @@ import java.util.UUID;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "标杆值管理")
 @RequestMapping("/benchmarkManage")
 public class BenchmarkController extends BaseController
 {
+    @Autowired
     private IBenchmarkService energyBenchmarkManageService;
+    @Autowired
     private TokenService tokenService;
 
     /**

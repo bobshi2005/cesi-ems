@@ -1,14 +1,14 @@
 package com.cesi.web.controller.common;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,21 +29,24 @@ import com.cesi.system.service.ISysConfigService;
  * @author cesi
  */
 @Slf4j
-@AllArgsConstructor
 @Api(tags = "验证码")
 @RestController
 public class CaptchaController
 {
     @Resource(name = "captchaProducer")
+    @Autowired
     private Producer captchaProducer;
 
     @Resource(name = "captchaProducerMath")
+    @Autowired
     private Producer captchaProducerMath;
 
     @Resource
+    @Autowired
     private RedisCache redisCache;
     
     @Resource
+    @Autowired
     private ISysConfigService sysConfigService;
     /**
      * 生成验证码

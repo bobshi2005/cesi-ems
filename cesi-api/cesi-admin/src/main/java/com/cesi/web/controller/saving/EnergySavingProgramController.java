@@ -1,6 +1,7 @@
 package com.cesi.web.controller.saving;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
@@ -11,12 +12,11 @@ import com.cesi.saving.domain.vo.EnergySavingProgramVO;
 import com.cesi.saving.service.IEnergySavingProgramService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * 节能项目管理
@@ -26,10 +26,10 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "节能项目管理")
 @RequestMapping("/energySavingProject")
 public class EnergySavingProgramController extends BaseController {
+    @Autowired
     private IEnergySavingProgramService energySavingProgramService;
 
     /**

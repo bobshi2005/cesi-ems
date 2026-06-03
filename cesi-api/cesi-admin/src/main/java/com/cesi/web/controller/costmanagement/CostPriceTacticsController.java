@@ -1,5 +1,6 @@
 package com.cesi.web.controller.costmanagement;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
@@ -13,7 +14,6 @@ import com.cesi.costmanagement.domain.vo.CostPriceTacticsVo;
 import com.cesi.costmanagement.service.ICostPriceTacticsService;
 import com.cesi.framework.web.service.TokenService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +27,13 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "成本策略管理")
 @RequestMapping("/cost/tactics")
 public class CostPriceTacticsController extends BaseController
 {
+    @Autowired
     private ICostPriceTacticsService costPriceTacticsService;
+    @Autowired
     private TokenService tokenService;
 
     /**

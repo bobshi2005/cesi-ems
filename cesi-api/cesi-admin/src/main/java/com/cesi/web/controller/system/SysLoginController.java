@@ -1,5 +1,6 @@
 package com.cesi.web.controller.system;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.cesi.common.constant.Constants;
 import com.cesi.common.core.domain.AjaxResult;
@@ -14,7 +15,7 @@ import com.cesi.framework.web.service.SysPermissionService;
 import com.cesi.system.service.ISysMenuService;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Set;
 
@@ -26,12 +27,15 @@ import java.util.Set;
 @RestController
 public class SysLoginController {
     @Resource
+    @Autowired
     private SysLoginService loginService;
 
     @Resource
+    @Autowired
     private ISysMenuService menuService;
 
     @Resource
+    @Autowired
     private SysPermissionService permissionService;
 
     /**

@@ -1,8 +1,9 @@
 package com.cesi.web.controller.system;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
-import javax.servlet.http.HttpServletResponse;
-import javax.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,6 +33,7 @@ import com.cesi.system.service.ISysConfigService;
 public class SysConfigController extends BaseController
 {
     @Resource
+    @Autowired
     private ISysConfigService configService;
 
     /**

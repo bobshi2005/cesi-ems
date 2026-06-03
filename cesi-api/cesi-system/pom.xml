@@ -7,18 +7,6 @@
         <groupId>com.cesi</groupId>
         <version>2.5.2</version>
     </parent>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>cesi-system</artifactId>
@@ -39,6 +27,13 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>5.2.4</version>
+        </dependency>
+
+        <!-- servlet包（Jakarta EE 10） -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

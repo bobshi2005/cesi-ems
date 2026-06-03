@@ -1,8 +1,9 @@
 package com.cesi.web.controller.system;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,6 +33,7 @@ import com.cesi.system.service.ISysDeptService;
 public class SysDeptController extends BaseController
 {
     @Resource
+    @Autowired
     private ISysDeptService deptService;
 
     /**

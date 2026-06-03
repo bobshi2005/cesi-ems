@@ -1,5 +1,6 @@
 package com.cesi.web.controller.system;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,7 @@ import com.cesi.common.utils.file.MimeTypeUtils;
 import com.cesi.framework.web.service.TokenService;
 import com.cesi.system.service.ISysUserService;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * 个人信息 业务处理
@@ -35,9 +36,11 @@ import javax.annotation.Resource;
 public class SysProfileController extends BaseController
 {
     @Resource
+    @Autowired
     private ISysUserService userService;
 
     @Resource
+    @Autowired
     private TokenService tokenService;
 
     /**

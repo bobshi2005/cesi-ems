@@ -1,5 +1,6 @@
 package com.cesi.web.controller.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
@@ -14,7 +15,6 @@ import com.cesi.model.domain.vo.MeterPointEditDTO;
 import com.cesi.model.domain.vo.ModelNodePointInfo;
 import com.cesi.model.service.IMeterPointService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,11 +31,11 @@ import java.util.UUID;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "指标管理")
 @RequestMapping("/basicsetting/energyindex")
 public class MeterPointController extends BaseController {
 
+    @Autowired
     private IMeterPointService meterPointService;
 
     /**

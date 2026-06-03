@@ -1,5 +1,6 @@
 package com.cesi.web.controller.comprehensivestatistics;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.basicdata.domain.Device;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
@@ -10,7 +11,6 @@ import com.cesi.keyequipment.service.IDailyKeyEquipmentService;
 import com.cesi.model.domain.vo.MeterPointVO;
 import com.cesi.model.service.IModelNodeService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,13 +29,15 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "综合统计")
 @RequestMapping("/statisticalData/comprehensiveStatistics")
 public class ComprehensiveStatisticsController extends BaseController {
 
+    @Autowired
     private IModelNodeService modelNodeService;
+    @Autowired
     private IComprehensiveStatisticsService comprehensiveStatisticsService;
+    @Autowired
     private IDailyKeyEquipmentService dailykeyEquipment;
 
     @GetMapping("/getList")

@@ -1,6 +1,7 @@
 package com.cesi.web.controller.keyequipment;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
 import com.cesi.keyequipment.domain.MonthlyKeyEquipment;
@@ -11,7 +12,6 @@ import com.cesi.model.service.IModelNodeService;
 import com.cesi.realtimedata.domain.dto.EnergyUsedDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,12 +31,13 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @RequestMapping("/keyEquipment/MonthlyKeyEquipment")
 @Api(value = "重点设备能耗统计（月）", tags = {"设备单耗分析"})
 public class MonthlyKeyEquipmentController extends BaseController {
 
+    @Autowired
     private IModelNodeService modelNodeService;
+    @Autowired
     private IMonthlyKeyEquipmentService monthlyKeyEquipmentService;
 
     @GetMapping("/list")

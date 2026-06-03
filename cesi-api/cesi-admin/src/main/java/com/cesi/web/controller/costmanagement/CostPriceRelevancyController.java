@@ -1,10 +1,10 @@
 package com.cesi.web.controller.costmanagement;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.common.core.page.TableDataInfo;
 import com.cesi.framework.web.service.TokenService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +29,13 @@ import com.cesi.costmanagement.service.ICostPriceRelevancyService;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "单价关联管理")
 @RequestMapping("/cost/relevancy")
 public class CostPriceRelevancyController extends BaseController
 {
+    @Autowired
     private ICostPriceRelevancyService costPriceRelevancyService;
+    @Autowired
     private TokenService tokenService;
 
     /**

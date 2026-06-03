@@ -1,5 +1,6 @@
 package com.cesi.web.controller.energyMonitor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
@@ -8,7 +9,6 @@ import com.cesi.model.domain.MeterPoint;
 import com.cesi.model.service.IMeterPointService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +23,13 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "三相不平衡")
 @RequestMapping("/threePhaseUnbalanceAnalysis")
 public class ElectricThreePhaseController extends BaseController {
 
+    @Autowired
     private IElectricThreePhaseService electricThreePhaseService;
+    @Autowired
     private IMeterPointService meterPointService;
 
     /**

@@ -1,11 +1,12 @@
 package com.cesi.web.controller.system;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.cesi.common.config.BaseConfig;
 import com.cesi.common.utils.StringUtils;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * 首页
@@ -17,6 +18,7 @@ public class SysIndexController
 {
     /** 系统基础配置 */
     @Resource
+    @Autowired
     private BaseConfig baseConfig;
 
     /**

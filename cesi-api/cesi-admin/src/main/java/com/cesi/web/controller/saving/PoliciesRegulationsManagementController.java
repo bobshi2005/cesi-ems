@@ -1,6 +1,7 @@
 package com.cesi.web.controller.saving;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
@@ -12,7 +13,6 @@ import com.cesi.saving.domain.vo.PolicyPageVO;
 import com.cesi.saving.service.IPolicyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +24,11 @@ import org.springframework.web.bind.annotation.*;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "政策法规管理")
 @RequestMapping("/policiesRegulations")
 public class PoliciesRegulationsManagementController extends BaseController {
 
+    @Autowired
     private IPolicyService policiesRegulationsService;
 
     /**

@@ -1,14 +1,14 @@
 package com.cesi.quartz.service.impl;
 
 import java.util.List;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import com.cesi.quartz.mapper.SysJobMapper;
 import org.quartz.JobDataMap;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.cesi.common.constant.ScheduleConstants;

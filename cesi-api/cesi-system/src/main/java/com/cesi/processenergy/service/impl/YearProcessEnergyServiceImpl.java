@@ -14,8 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import javax.annotation.Resources;
+import jakarta.annotation.Resource;
+import jakarta.annotation.Resources;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;

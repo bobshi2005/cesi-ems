@@ -8,7 +8,6 @@ import com.cesi.realtimedata.domain.TagValue;
 import com.cesi.realtimedata.domain.TagValueResult;
 import com.cesi.realtimedata.service.RealtimeDatabaseService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "实时数据")
 @RequestMapping("/rtdb")
 public class RealtimeDataController extends BaseController {

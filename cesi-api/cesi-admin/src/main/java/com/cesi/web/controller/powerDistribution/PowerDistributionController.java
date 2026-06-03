@@ -1,5 +1,6 @@
 package com.cesi.web.controller.powerDistribution;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -10,7 +11,6 @@ import com.cesi.common.core.domain.AjaxResult;
 import com.cesi.powerDistribution.domain.PowerDistribution;
 import com.cesi.powerDistribution.services.IPowerDistributionService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +20,13 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "配电室管理")
 @RequestMapping("/powerDistribution")
 public class PowerDistributionController extends BaseController {
 
+    @Autowired
     private IPowerDistributionService powerDistributionService;
+    @Autowired
     private IMeterService meterImplementService;
 
     /**

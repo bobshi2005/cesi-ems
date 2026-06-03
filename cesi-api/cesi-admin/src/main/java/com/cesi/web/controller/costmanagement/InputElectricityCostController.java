@@ -1,5 +1,6 @@
 package com.cesi.web.controller.costmanagement;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -7,7 +8,6 @@ import com.cesi.common.core.domain.model.LoginUser;
 import com.cesi.common.core.page.TableDataInfo;
 import com.cesi.common.utils.ServletUtils;
 import com.cesi.framework.web.service.TokenService;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,11 +32,12 @@ import com.cesi.costmanagement.service.IInputElectricityCostService;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @RequestMapping("/cost/input")
 public class InputElectricityCostController extends BaseController
 {
+    @Autowired
     private IInputElectricityCostService costElectricityInputService;
+    @Autowired
     private TokenService tokenService;
 
     @PreAuthorize("@ss.hasPermi('system:Input:list')")

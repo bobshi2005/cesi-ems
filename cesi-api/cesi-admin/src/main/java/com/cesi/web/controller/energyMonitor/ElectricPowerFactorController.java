@@ -9,7 +9,6 @@ import com.cesi.model.domain.MeterPoint;
 import com.cesi.model.service.IMeterPointService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,12 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "功率因数")
 @RequestMapping("/powerFactorAnalysis")
 public class ElectricPowerFactorController extends BaseController {
 
+    @Autowired
     private IElectricPowerFactorService electricPowerFactorService;
+    @Autowired
     private IMeterPointService energyIndexService;
 
     /**

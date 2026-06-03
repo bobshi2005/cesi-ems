@@ -11,7 +11,6 @@ import com.cesi.statisticalAnalysis.domain.vo.DataAnalysisYoYVO;
 import com.cesi.statisticalAnalysis.service.IStatisticalAnalysisService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -31,7 +30,6 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "统计分析")
 @RequestMapping("/statisticalAnalysis")
 public class StatisticalAnalysisController extends BaseController {

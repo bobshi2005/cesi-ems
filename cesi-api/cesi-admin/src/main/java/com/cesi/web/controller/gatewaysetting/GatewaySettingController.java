@@ -1,5 +1,6 @@
 package com.cesi.web.controller.gatewaysetting;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.common.annotation.Log;
@@ -11,12 +12,11 @@ import com.cesi.common.utils.poi.ExcelUtil;
 import com.cesi.gatewaysetting.domain.GatewaySetting;
 import com.cesi.gatewaysetting.service.IGatewaySettingService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,10 +27,10 @@ import java.util.UUID;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "网关配置信息")
 @RequestMapping("/gatewaySetting")
 public class GatewaySettingController extends BaseController {
+    @Autowired
     private IGatewaySettingService gatewaySettingService;
 
     /**

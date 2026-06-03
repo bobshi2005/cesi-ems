@@ -11,7 +11,6 @@ import com.cesi.common.utils.uuid.UUID;
 import com.cesi.realtimedata.domain.SvgAttach;
 import com.cesi.realtimedata.domain.SvgSetting;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +27,6 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(value = "系统图", tags = {"系统图"})
 @RequestMapping("/equipmentFile")
 public class SvgAttachController extends BaseController {

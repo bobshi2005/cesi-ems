@@ -1,5 +1,6 @@
 package com.cesi.web.controller.processenergy;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import com.cesi.common.core.controller.BaseController;
@@ -14,7 +15,6 @@ import com.cesi.processenergy.service.IYearProcessEnergyService;
 import com.cesi.realtimedata.domain.dto.DataItemQueryDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,16 +31,18 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @RequestMapping("/processEnergy/YearProcessEnergy")
 @Api(value = "工序能耗统计（年）", tags = {"工序能耗统计"})
 public class YearProcessEnergyController extends BaseController {
 
+    @Autowired
     private IModelNodeService modelNodeService;
+    @Autowired
     private IYearProcessEnergyService yearProcessEnergyService;
 
     @GetMapping("/list")
     @ApiOperation(value = "工序能耗统计（年）列表")
+    @Autowired
     private AjaxResult list(DataItemQueryDTO dataItem) {
         List<ModelNode> nodeId = modelNodeService.getModelNodeByModelCode(dataItem.getIndexCode());
         if (CollectionUtils.isEmpty(nodeId)) {

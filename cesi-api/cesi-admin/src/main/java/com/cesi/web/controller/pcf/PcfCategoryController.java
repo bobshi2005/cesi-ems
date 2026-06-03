@@ -1,5 +1,6 @@
 package com.cesi.web.controller.pcf;
 
+import lombok.RequiredArgsConstructor;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
 import com.cesi.pcf.domain.EmspcfCategory;
@@ -7,12 +8,11 @@ import com.cesi.pcf.domain.EmspcfProduct;
 import com.cesi.pcf.service.IPcfCategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
-@AllArgsConstructor
 @Api(tags = "产品碳足迹-分类与产品管理")
 @RequestMapping("/pcf/category")
 public class PcfCategoryController extends BaseController {

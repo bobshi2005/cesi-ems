@@ -1,5 +1,6 @@
 package com.cesi.web.controller.energybudget;
 
+import lombok.RequiredArgsConstructor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
@@ -10,12 +11,11 @@ import com.cesi.energybudget.domain.EmsEnergyBudget;
 import com.cesi.energybudget.service.IEmsEnergyBudgetService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
-@AllArgsConstructor
 @Api(tags = "用能预算管理")
 @RequestMapping("/budget/energy")
 public class EmsEnergyBudgetController extends BaseController {

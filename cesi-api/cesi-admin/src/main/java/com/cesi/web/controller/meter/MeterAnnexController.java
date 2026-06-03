@@ -1,6 +1,7 @@
 package com.cesi.web.controller.meter;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
@@ -10,7 +11,6 @@ import com.cesi.common.utils.poi.ExcelUtil;
 import com.cesi.meter.domain.MeterAnnex;
 import com.cesi.meter.services.IMeterAnnexService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,10 +26,10 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "计量器具档案附件管理")
 @RequestMapping("/meter/annex")
 public class MeterAnnexController extends BaseController {
+    @Autowired
     private IMeterAnnexService meterAnnexService;
 
     /**

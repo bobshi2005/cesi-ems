@@ -1,5 +1,6 @@
 package com.cesi.web.controller.carbonemission;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.carbonemission.domain.dto.CarbonEmissionDTO;
 import com.cesi.carbonemission.domain.vo.carbonEmissionYQVO;
 import com.cesi.carbonemission.service.ICarbonEmissionService;
@@ -7,11 +8,10 @@ import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
 import com.cesi.common.utils.poi.ExcelUtil;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -22,10 +22,10 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "碳排核算")
 @RequestMapping("/carbonEmission")
 public class CarbonEmissionController extends BaseController {
+    @Autowired
     private ICarbonEmissionService carbonEmissionService;
 
     @GetMapping("/up")

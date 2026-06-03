@@ -1,5 +1,6 @@
 package com.cesi.web.controller.comprehensivestatistics;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import cn.hutool.core.date.DateUtil;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
@@ -13,7 +14,6 @@ import com.cesi.model.service.IModelNodeService;
 import com.cesi.realtimedata.domain.dto.EnergyUsedDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -34,12 +34,13 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(value = "综合指标分析（年）controller", tags = {"综合指标分析"})
 @RequestMapping("/comprehensive/yearComprehensive")
 public class YearComprehensiveController extends BaseController {
 
+    @Autowired
     private IModelNodeService modelNodeService;
+    @Autowired
     private IyearComprehensive yearComprehensive;
 
     /**

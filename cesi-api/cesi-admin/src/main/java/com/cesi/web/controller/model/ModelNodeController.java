@@ -1,5 +1,6 @@
 package com.cesi.web.controller.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.fastjson.JSONObject;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
@@ -14,7 +15,6 @@ import com.cesi.model.domain.vo.MeterPointVO;
 import com.cesi.model.service.IModelNodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,11 +28,11 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @RequestMapping("/basicsetting/modelnode")
 @Api(value = "模型节点", tags = {"模型节点"})
 public class ModelNodeController extends BaseController {
 
+    @Autowired
     private IModelNodeService modelNodeService;
 
 

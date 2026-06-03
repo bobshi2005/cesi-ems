@@ -1,5 +1,6 @@
 package com.cesi.web.controller.alarm;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.alarm.domain.entity.AlarmItem;
 import com.cesi.alarm.services.IAlarmItemService;
 import com.cesi.common.annotation.Log;
@@ -11,7 +12,6 @@ import com.cesi.common.utils.ServletUtils;
 import com.cesi.common.utils.poi.ExcelUtil;
 import com.cesi.framework.web.service.TokenService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +24,13 @@ import java.util.Map;
  * @author cesi
  */
 @RestController
-@AllArgsConstructor
 @Api(tags = "预报警设置相关功能")
 @RequestMapping("/system/alarmitem")
 public class AlarmItemController extends BaseController {
 
+    @Autowired
     private IAlarmItemService alarmItemService;
+    @Autowired
     private TokenService tokenService;
 
 

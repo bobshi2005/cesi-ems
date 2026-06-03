@@ -1,5 +1,6 @@
 package com.cesi.web.controller.comprehensivestatistics;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
 import com.cesi.comprehensivestatistics.domain.DailyComprehensive;
@@ -9,7 +10,6 @@ import com.cesi.model.service.IModelNodeService;
 import com.cesi.realtimedata.domain.dto.EnergyUsedDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,12 +27,13 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(value = "综合指标分析（日）controller", tags = {"综合指标分析"})
 @RequestMapping("/comprehensive/dailyComprehensive")
 public class DailyComprehensiveController extends BaseController {
 
+    @Autowired
     private IModelNodeService modelNodeService;
+    @Autowired
     private IDailyComprehensiveService dailyComprehensiveService;
 
     /*全厂能耗统计*/

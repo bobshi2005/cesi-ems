@@ -1,5 +1,6 @@
 package com.cesi.web.controller.common;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.common.config.BaseConfig;
 import com.cesi.common.constant.CommonConst;
 import com.cesi.common.constant.Constants;
@@ -9,7 +10,6 @@ import com.cesi.common.utils.file.FileUploadUtils;
 import com.cesi.common.utils.file.FileUtils;
 import com.cesi.framework.config.ServerConfig;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +33,13 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "通用")
 @RequestMapping("/common")
 public class CommonController
 {
+    @Autowired
     private ServerConfig serverConfig;
+    @Autowired
     private BaseConfig baseConfig;
 
     /**

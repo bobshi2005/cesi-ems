@@ -1,7 +1,8 @@
 package com.cesi.web.controller.system;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +32,7 @@ import com.cesi.system.service.ISysMenuService;
 public class SysMenuController extends BaseController
 {
     @Resource
+    @Autowired
     private ISysMenuService menuService;
 
     /**

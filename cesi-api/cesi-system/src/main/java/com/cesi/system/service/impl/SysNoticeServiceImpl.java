@@ -1,7 +1,7 @@
 package com.cesi.system.service.impl;
 
 import java.util.List;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

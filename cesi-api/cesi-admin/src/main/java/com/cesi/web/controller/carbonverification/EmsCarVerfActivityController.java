@@ -1,5 +1,6 @@
 package com.cesi.web.controller.carbonverification;
 
+import lombok.RequiredArgsConstructor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.carbonverification.domain.EmsCarVerfActivity;
 import com.cesi.carbonverification.service.IEmsCarVerfActivityService;
@@ -11,18 +12,17 @@ import com.cesi.common.enums.BusinessType;
 import com.cesi.common.utils.poi.ExcelUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @RestController
-@AllArgsConstructor
 @Api(tags = "碳核查-活动数据追踪")
 @RequestMapping("/carbonVerification/activity")
 public class EmsCarVerfActivityController extends BaseController {

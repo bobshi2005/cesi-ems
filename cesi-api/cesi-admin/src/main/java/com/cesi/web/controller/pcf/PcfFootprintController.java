@@ -1,5 +1,6 @@
 package com.cesi.web.controller.pcf;
 
+import lombok.RequiredArgsConstructor;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
@@ -8,12 +9,11 @@ import com.cesi.pcf.domain.*;
 import com.cesi.pcf.service.IPcfFootprintService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
-@AllArgsConstructor
 @Api(tags = "产品碳足迹-核算数据")
 @RequestMapping("/pcf/footprint")
 public class PcfFootprintController extends BaseController {

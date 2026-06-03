@@ -1,5 +1,6 @@
 package com.cesi.web.controller.system;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.common.annotation.Anonymous;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
@@ -9,7 +10,7 @@ import com.cesi.system.domain.SysNameConfig;
 import com.cesi.system.service.ISysNameConfigService;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * 系统名称配置Controller
@@ -20,6 +21,7 @@ import javax.annotation.Resource;
 @RequestMapping("/system/nameconfig")
 public class SysNameConfigController extends BaseController {
     @Resource
+    @Autowired
     private ISysNameConfigService sysNameConfigService;
 
 

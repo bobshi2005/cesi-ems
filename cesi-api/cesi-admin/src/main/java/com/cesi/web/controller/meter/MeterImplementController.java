@@ -15,7 +15,6 @@ import com.cesi.common.utils.poi.ExcelUtil;
 import com.cesi.framework.web.service.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,7 +31,6 @@ import java.util.UUID;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @RequestMapping("/meter/implement")
 @Api(value = "计量器具管理",tags = {"计量器具管理"})
 public class MeterImplementController extends BaseController

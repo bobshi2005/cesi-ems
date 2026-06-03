@@ -3,7 +3,7 @@ package com.cesi.framework.web.service;
 import java.util.concurrent.TimeUnit;
 
 import com.cesi.framework.security.context.AuthenticationContextHolder;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;

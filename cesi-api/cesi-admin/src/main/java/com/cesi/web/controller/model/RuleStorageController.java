@@ -1,5 +1,6 @@
 package com.cesi.web.controller.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.fastjson.JSONObject;
 import com.greenpineyu.fel.FelEngine;
 import com.greenpineyu.fel.FelEngineImpl;
@@ -15,7 +16,6 @@ import com.cesi.model.domain.RuleStorage;
 import com.cesi.model.service.IRuleStorageService;
 import com.cesi.model.service.RuleFormulaService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +28,14 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "指标存储管理")
 @RequestMapping("/basicsetting/indexStorage")
 public class RuleStorageController extends BaseController {
 
+    @Autowired
     private IRuleStorageService indexStorageService;
 
+    @Autowired
     private RuleFormulaService ruleFormulaService;
 
 
@@ -100,6 +101,7 @@ public class RuleStorageController extends BaseController {
     }
 
     @NotNull
+    @Autowired
     private List<RuleStorage> getDefaultIndexStorage() {
         List<RuleStorage> calcPeriods = new ArrayList<>();
         getPeriod(calcPeriods, TimeType.HOUR);
@@ -109,6 +111,7 @@ public class RuleStorageController extends BaseController {
         return calcPeriods;
     }
 
+    @Autowired
     private void getPeriod(List<RuleStorage> calcPeriods, TimeType timeType) {
         RuleStorage hour = new RuleStorage();
         hour.setTimeType(timeType);
@@ -116,6 +119,7 @@ public class RuleStorageController extends BaseController {
         calcPeriods.add(hour);
     }
 
+    @Autowired
     private void buildParam(FelNode felNode, Set<String> params) {
         if (felNode.getChildren() == null) {
             if (isConfigParam(felNode.getText())) {
@@ -134,6 +138,7 @@ public class RuleStorageController extends BaseController {
         }
     }
 
+    @Autowired
     private boolean isConfigParam(String param) {
         if (param.startsWith("'") && param.endsWith("'")) {
             return false;

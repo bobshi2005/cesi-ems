@@ -1,5 +1,6 @@
 package com.cesi.web.controller.history;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import cn.hutool.core.date.DateUtil;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.constant.CommonConst;
@@ -22,7 +23,6 @@ import com.cesi.model.service.IMeterPointService;
 import com.cesi.realtimedata.domain.TagValue;
 import com.cesi.realtimedata.service.RealtimeDatabaseService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,12 +42,14 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "历史数据趋势")
 @RequestMapping("/dataMonitoring/historyDataTrend")
 public class HistoryDataTrendController extends BaseController {
+    @Autowired
     private IMeterPointService meterPointService;
+    @Autowired
     private IMeterService meterImplementService;
+    @Autowired
     private RealtimeDatabaseService realtimeDatabaseService;
 
 

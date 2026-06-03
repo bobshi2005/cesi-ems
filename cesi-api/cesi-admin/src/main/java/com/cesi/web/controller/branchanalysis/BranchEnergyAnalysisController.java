@@ -8,7 +8,6 @@ import com.cesi.branchanalysis.service.IBranchAnalysisService;
 import com.cesi.realtimedata.domain.dto.BranchAnalysisDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(value = "支路用能能耗统计",tags = {"支路用能分析"})
 @RequestMapping("/branchanalysis")
 public class BranchEnergyAnalysisController extends BaseController {
 
+    @Autowired
     private IBranchAnalysisService branchAnalysisService;
 
     @GetMapping("/list")

@@ -1,5 +1,6 @@
 package com.cesi.web.controller.system;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
@@ -22,8 +23,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,15 +38,19 @@ import java.util.stream.Collectors;
 public class SysUserController extends BaseController
 {
     @Resource
+    @Autowired
     private ISysUserService userService;
 
     @Resource
+    @Autowired
     private ISysRoleService roleService;
 
     @Resource
+    @Autowired
     private ISysDeptService deptService;
 
     @Resource
+    @Autowired
     private ISysPostService postService;
 
     /**

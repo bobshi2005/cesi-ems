@@ -3,7 +3,7 @@ package com.cesi.framework.web.service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import com.cesi.common.core.domain.entity.SysRole;

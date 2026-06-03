@@ -2,8 +2,8 @@ package com.cesi.system.service.impl;
 
 import java.util.Collection;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

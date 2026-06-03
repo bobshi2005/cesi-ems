@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.RegExUtils;
 import org.springframework.beans.BeansException;
@@ -20,7 +21,7 @@ import com.cesi.common.annotation.Anonymous;
 
 /**
  * 设置Anonymous注解允许匿名访问的url
- * 
+ *
  * @author cesi
  */
 @Configuration
@@ -43,16 +44,24 @@ public class PermitAllUrlProperties implements InitializingBean, ApplicationCont
         map.keySet().forEach(info -> {
             HandlerMethod handlerMethod = map.get(info);
 
-            // 获取方法上边的注解 替代path variable 为 *
             Anonymous method = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Anonymous.class);
-            Optional.ofNullable(method).ifPresent(anonymous -> Objects.requireNonNull(info.getPatternsCondition().getPatterns())
+            Optional.ofNullable(method).ifPresent(anonymous -> getPatterns(info)
                     .forEach(url -> urls.add(RegExUtils.replaceAll(url, PATTERN, ASTERISK))));
 
-            // 获取类上边的注解, 替代path variable 为 *
             Anonymous controller = AnnotationUtils.findAnnotation(handlerMethod.getBeanType(), Anonymous.class);
-            Optional.ofNullable(controller).ifPresent(anonymous -> Objects.requireNonNull(info.getPatternsCondition().getPatterns())
+            Optional.ofNullable(controller).ifPresent(anonymous -> getPatterns(info)
                     .forEach(url -> urls.add(RegExUtils.replaceAll(url, PATTERN, ASTERISK))));
         });
+    }
+
+    private Set<String> getPatterns(RequestMappingInfo info) {
+        if (info.getPathPatternsCondition() != null) {
+            return info.getPathPatternsCondition().getPatternValues();
+        }
+        if (info.getPatternsCondition() != null) {
+            return Objects.requireNonNull(info.getPatternsCondition().getPatterns());
+        }
+        return Set.of();
     }
 
     @Override

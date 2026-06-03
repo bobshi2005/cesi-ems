@@ -1,5 +1,6 @@
 package com.cesi.web.controller.peakvalley;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
@@ -10,12 +11,11 @@ import com.cesi.common.utils.poi.ExcelUtil;
 import com.cesi.peakvalley.domain.SettingElectricityPriceDate;
 import com.cesi.peakvalley.service.ISettingElectricityPriceDateService;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -25,11 +25,11 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "尖峰平谷电价时间段")
 @RequestMapping("/electricitypricedate")
 public class SettingElectricityPriceDateController extends BaseController
 {
+    @Autowired
     private ISettingElectricityPriceDateService electricityPriceDateService;
 
     /**

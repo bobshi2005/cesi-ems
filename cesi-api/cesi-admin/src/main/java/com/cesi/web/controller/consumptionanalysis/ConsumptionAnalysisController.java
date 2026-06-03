@@ -12,7 +12,6 @@ import com.cesi.consumptionanalysis.domain.vo.RankingEnergyData;
 import com.cesi.consumptionanalysis.service.IConsumptionAnalysisService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -27,7 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,12 +37,13 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "综合能耗分析")
 @RequestMapping("/consumptionanalysis")
 public class ConsumptionAnalysisController extends BaseController {
 
+    @Autowired
     private IConsumptionAnalysisService consumptionAnalysisService;
+    @Autowired
     private ISysEnergyService sysEnergyService;
 
     @GetMapping("/getByArea")

@@ -1,5 +1,6 @@
 package com.cesi.web.controller.realtimedata;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.controller.BaseController;
 import com.cesi.common.core.domain.AjaxResult;
@@ -12,12 +13,11 @@ import com.cesi.realtimedata.service.RealtimeDatabaseService;
 import com.cesi.realtimedata.service.RealtimeTrendService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -25,12 +25,13 @@ import java.util.List;
  **/
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(value = "实时监控", tags = {"实时监控"})
 @RequestMapping("rtdb/realtimeTrend")
 public class RealtimeTrendController extends BaseController {
 
+    @Autowired
     private RealtimeTrendService realtimeTrendService;
+    @Autowired
     private RealtimeDatabaseService realtimeDatabaseService;
 
     /**

@@ -1,11 +1,11 @@
 package com.cesi.web.controller.statisticalAnalysis;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.common.annotation.Log;
 import com.cesi.common.core.domain.AjaxResult;
 import com.cesi.statisticalAnalysis.service.IEnergyConsumeDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 @Api(tags = "能耗统计分析")
 @RequestMapping("/energyTypeAnalysis")
 public class EnergyTypeAnalysisController {
 
+    @Autowired
     private IEnergyConsumeDataService energyConsumeDataService;
 
     /**

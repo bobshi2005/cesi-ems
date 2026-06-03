@@ -3,7 +3,7 @@ package com.cesi.statisticalAnalysis.domain.vo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 /**

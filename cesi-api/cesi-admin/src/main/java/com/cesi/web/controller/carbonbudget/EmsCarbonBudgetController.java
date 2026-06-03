@@ -1,5 +1,6 @@
 package com.cesi.web.controller.carbonbudget;
 
+import lombok.RequiredArgsConstructor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cesi.carbonbudget.domain.EmsCarbonBudget;
 import com.cesi.carbonbudget.service.IEmsCarbonBudgetService;
@@ -10,12 +11,11 @@ import com.cesi.common.core.page.TableDataInfo;
 import com.cesi.common.enums.BusinessType;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
-@AllArgsConstructor
 @Api(tags = "碳排放预算管理")
 @RequestMapping("/budget/carbon")
 public class EmsCarbonBudgetController extends BaseController {

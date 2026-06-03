@@ -1,5 +1,6 @@
 package com.cesi.web.controller.singlelogin;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.cesi.common.annotation.Anonymous;
 import com.cesi.common.constant.Constants;
 import com.cesi.common.core.domain.AjaxResult;
@@ -7,13 +8,12 @@ import com.cesi.common.core.domain.entity.SysUser;
 import com.cesi.common.utils.StringUtils;
 import com.cesi.framework.web.service.SysLoginService;
 import com.cesi.singlelogin.service.ISingleLoginService;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * 单点登录接口对接
@@ -22,9 +22,10 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @RestController
-@AllArgsConstructor
 public class SingleLoginController {
+    @Autowired
     private ISingleLoginService singleLoginService;
+    @Autowired
     private SysLoginService loginService;
 
     /**
