@@ -8594,3 +8594,952 @@ ALTER TABLE "public"."sys_user_post" ADD CONSTRAINT "sys_user_post_pkey" PRIMARY
 -- Primary Key structure for table sys_user_role
 -- ----------------------------
 ALTER TABLE "public"."sys_user_role" ADD CONSTRAINT "sys_user_role_pkey" PRIMARY KEY ("user_id", "role_id");
+
+-- =====================================================
+-- 碳核查支撑模块 - 数据库迁移脚本
+-- 创建日期：2026-04-29
+-- =====================================================
+
+-- ---- 1. 排放源活动数据表 ----
+
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_carbon_verification_activity_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_carbon_verification_activity" (
+    "id"               BIGINT         NOT NULL DEFAULT nextval('ems_carbon_verification_activity_seq'::regclass),
+    "year"             INTEGER        NOT NULL,
+    "month"            INTEGER        NOT NULL,
+    "org_unit"         VARCHAR(64)    NOT NULL DEFAULT '全厂',
+    "emission_source"  VARCHAR(64)    NOT NULL,
+    "emission_type"    VARCHAR(16)    NOT NULL DEFAULT 'DIRECT',
+    "data_method"      VARCHAR(32)    NOT NULL DEFAULT '手工录入',
+    "unit"             VARCHAR(16),
+    "activity_value"   NUMERIC(18,4),
+    "emission_factor"  NUMERIC(12,6),
+    "factor_source"    VARCHAR(128),
+    "emission_amount"  NUMERIC(18,4),
+    "is_estimated"     CHAR(1)        NOT NULL DEFAULT '0',
+    "create_by"        VARCHAR(64),
+    "create_time"      TIMESTAMP,
+    "update_by"        VARCHAR(64),
+    "update_time"      TIMESTAMP,
+    "remark"           VARCHAR(500),
+    CONSTRAINT "ems_cva_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "uk_ems_cva" UNIQUE ("year", "month", "emission_source", "org_unit")
+);
+
+COMMENT ON TABLE  "public"."ems_carbon_verification_activity"                    IS '碳核查-排放源活动数据';
+COMMENT ON COLUMN "public"."ems_carbon_verification_activity"."emission_type"    IS 'DIRECT=直接排放 INDIRECT=间接排放';
+COMMENT ON COLUMN "public"."ems_carbon_verification_activity"."data_method"      IS '手工录入/Excel导入/系统数据';
+COMMENT ON COLUMN "public"."ems_carbon_verification_activity"."is_estimated"     IS '0=实测数据 1=估算填充';
+
+-- ---- 2. 原始凭证表 ----
+
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_carbon_verification_voucher_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_carbon_verification_voucher" (
+    "id"               BIGINT         NOT NULL DEFAULT nextval('ems_carbon_verification_voucher_seq'::regclass),
+    "year"             INTEGER        NOT NULL,
+    "month"            INTEGER        NOT NULL,
+    "org_unit"         VARCHAR(64)    NOT NULL DEFAULT '全厂',
+    "emission_source"  VARCHAR(64)    NOT NULL,
+    "voucher_type"     VARCHAR(32)    NOT NULL,
+    "voucher_name"     VARCHAR(255)   NOT NULL,
+    "file_name"        VARCHAR(255),
+    "file_path"        VARCHAR(512),
+    "file_size"        BIGINT,
+    "file_format"      VARCHAR(16),
+    "upload_by"        VARCHAR(64),
+    "upload_time"      TIMESTAMP,
+    "create_by"        VARCHAR(64),
+    "create_time"      TIMESTAMP,
+    "update_by"        VARCHAR(64),
+    "update_time"      TIMESTAMP,
+    "remark"           VARCHAR(500),
+    CONSTRAINT "ems_cvv_pkey" PRIMARY KEY ("id")
+);
+
+COMMENT ON TABLE  "public"."ems_carbon_verification_voucher"                IS '碳核查-原始凭证';
+COMMENT ON COLUMN "public"."ems_carbon_verification_voucher"."voucher_type" IS 'METER=计量凭证/抄表单 DETECTION=检测检验报告 SALE_INVOICE=销售凭证/发票 PURCHASE_INVOICE=购进凭证/发票 OTHER=其他';
+
+-- ---- 3. 排放报告表 ----
+
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_carbon_verification_report_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_carbon_verification_report" (
+    "id"                  BIGINT         NOT NULL DEFAULT nextval('ems_carbon_verification_report_seq'::regclass),
+    "report_name"         VARCHAR(255)   NOT NULL,
+    "report_year"         INTEGER        NOT NULL,
+    "org_unit"            VARCHAR(64)    NOT NULL DEFAULT '全厂',
+    "standard"            VARCHAR(64),
+    "template_type"       VARCHAR(32),
+    "total_emission"      NUMERIC(18,4),
+    "data_completeness"   NUMERIC(5,2),
+    "report_version"      VARCHAR(16)    DEFAULT 'v0.1',
+    "file_path"           VARCHAR(512),
+    "status"              CHAR(1)        NOT NULL DEFAULT '0',
+    "generate_time"       TIMESTAMP,
+    "create_by"           VARCHAR(64),
+    "create_time"         TIMESTAMP,
+    "update_by"           VARCHAR(64),
+    "update_time"         TIMESTAMP,
+    "remark"              VARCHAR(500),
+    CONSTRAINT "ems_cvr_pkey" PRIMARY KEY ("id")
+);
+
+COMMENT ON TABLE  "public"."ems_carbon_verification_report"          IS '碳核查-排放报告';
+COMMENT ON COLUMN "public"."ems_carbon_verification_report"."status" IS '0=草稿 1=已发布';
+
+-- 新增章节字段（如表已存在请单独执行此语句）
+ALTER TABLE "public"."ems_carbon_verification_report"
+    ADD COLUMN IF NOT EXISTS "sections" VARCHAR(256) DEFAULT 'basicInfo,boundary,activityData,factor,result,uncertainty,voucherList';
+COMMENT ON COLUMN "public"."ems_carbon_verification_report"."sections" IS '包含章节，逗号分隔';
+
+-- ---- 4. 核查材料包表 ----
+
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_carbon_verification_package_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_carbon_verification_package" (
+    "id"                  BIGINT         NOT NULL DEFAULT nextval('ems_carbon_verification_package_seq'::regclass),
+    "package_name"        VARCHAR(255)   NOT NULL,
+    "package_year"        INTEGER        NOT NULL,
+    "verify_org"          VARCHAR(128),
+    "include_report"      CHAR(1)        DEFAULT '1',
+    "include_activity"    CHAR(1)        DEFAULT '1',
+    "include_voucher"     CHAR(1)        DEFAULT '1',
+    "include_factor"      CHAR(1)        DEFAULT '1',
+    "file_count"          INTEGER,
+    "file_size"           BIGINT,
+    "file_path"           VARCHAR(512),
+    "completeness_rate"   NUMERIC(5,2),
+    "missing_desc"        TEXT,
+    "status"              CHAR(1)        NOT NULL DEFAULT '0',
+    "create_by"           VARCHAR(64),
+    "create_time"         TIMESTAMP,
+    "update_by"           VARCHAR(64),
+    "update_time"         TIMESTAMP,
+    "remark"              VARCHAR(500),
+    CONSTRAINT "ems_cvp_pkey" PRIMARY KEY ("id")
+);
+
+COMMENT ON TABLE  "public"."ems_carbon_verification_package"          IS '碳核查-材料包';
+COMMENT ON COLUMN "public"."ems_carbon_verification_package"."status" IS '0=生成中 1=完成 2=失败';
+
+-- ---- 5. 菜单数据 ----
+-- 一级菜单（目录）：碳核查支撑，order_num=65 排在碳资产管理(60)之后
+
+INSERT INTO "public"."sys_menu"
+("menu_id","menu_name","parent_id","order_num","path","component",
+ "is_frame","is_cache","menu_type","visible","status",
+ "perms","icon","create_by","create_time","update_by","update_time","remark")
+VALUES
+(3200,'碳核查支撑',0,55,'carbonVerification',NULL,
+ 1,0,'M','0','0',
+ '','list','admin',NOW(),'',NULL,'碳核查支撑模块');
+
+-- 活动数据追踪
+INSERT INTO "public"."sys_menu"
+("menu_id","menu_name","parent_id","order_num","path","component",
+ "is_frame","is_cache","menu_type","visible","status",
+ "perms","icon","create_by","create_time","update_by","update_time","remark")
+VALUES
+(3201,'活动数据追踪',3200,1,'activity','carbonVerification/activity/index',
+ 1,0,'C','0','0',
+ 'carbonVerification:activity:list','table','admin',NOW(),'',NULL,'');
+
+-- 凭证管理
+INSERT INTO "public"."sys_menu"
+("menu_id","menu_name","parent_id","order_num","path","component",
+ "is_frame","is_cache","menu_type","visible","status",
+ "perms","icon","create_by","create_time","update_by","update_time","remark")
+VALUES
+(3202,'凭证管理',3200,2,'voucher','carbonVerification/voucher/index',
+ 1,0,'C','0','0',
+ 'carbonVerification:voucher:list','upload','admin',NOW(),'',NULL,'');
+
+-- 排放报告生成
+INSERT INTO "public"."sys_menu"
+("menu_id","menu_name","parent_id","order_num","path","component",
+ "is_frame","is_cache","menu_type","visible","status",
+ "perms","icon","create_by","create_time","update_by","update_time","remark")
+VALUES
+(3203,'排放报告生成',3200,3,'report','carbonVerification/report/index',
+ 1,0,'C','0','0',
+ 'carbonVerification:report:list','documentation','admin',NOW(),'',NULL,'');
+
+-- 核查材料汇集
+INSERT INTO "public"."sys_menu"
+("menu_id","menu_name","parent_id","order_num","path","component",
+ "is_frame","is_cache","menu_type","visible","status",
+ "perms","icon","create_by","create_time","update_by","update_time","remark")
+VALUES
+(3204,'核查材料汇集',3200,4,'package','carbonVerification/package/index',
+ 1,0,'C','0','0',
+ 'carbonVerification:package:list','zip','admin',NOW(),'',NULL,'');
+
+-- 活动数据按钮权限
+INSERT INTO "public"."sys_menu"("menu_id","menu_name","parent_id","order_num","path","component","is_frame","is_cache","menu_type","visible","status","perms","icon","create_by","create_time","update_by","update_time","remark") VALUES
+(3211,'查询', 3201,1,NULL,NULL,1,0,'F','0','0','carbonVerification:activity:list',  '#','admin',NOW(),'',NULL,''),
+(3212,'新增', 3201,2,NULL,NULL,1,0,'F','0','0','carbonVerification:activity:add',   '#','admin',NOW(),'',NULL,''),
+(3213,'修改', 3201,3,NULL,NULL,1,0,'F','0','0','carbonVerification:activity:edit',  '#','admin',NOW(),'',NULL,''),
+(3214,'删除', 3201,4,NULL,NULL,1,0,'F','0','0','carbonVerification:activity:remove','#','admin',NOW(),'',NULL,''),
+(3215,'导入', 3201,5,NULL,NULL,1,0,'F','0','0','carbonVerification:activity:import','#','admin',NOW(),'',NULL,''),
+(3216,'导出', 3201,6,NULL,NULL,1,0,'F','0','0','carbonVerification:activity:export','#','admin',NOW(),'',NULL,'');
+
+-- 凭证管理按钮权限
+INSERT INTO "public"."sys_menu"("menu_id","menu_name","parent_id","order_num","path","component","is_frame","is_cache","menu_type","visible","status","perms","icon","create_by","create_time","update_by","update_time","remark") VALUES
+(3221,'查询',   3202,1,NULL,NULL,1,0,'F','0','0','carbonVerification:voucher:list',    '#','admin',NOW(),'',NULL,''),
+(3222,'上传',   3202,2,NULL,NULL,1,0,'F','0','0','carbonVerification:voucher:upload',  '#','admin',NOW(),'',NULL,''),
+(3223,'下载',   3202,3,NULL,NULL,1,0,'F','0','0','carbonVerification:voucher:download','#','admin',NOW(),'',NULL,''),
+(3224,'删除',   3202,4,NULL,NULL,1,0,'F','0','0','carbonVerification:voucher:remove',  '#','admin',NOW(),'',NULL,''),
+(3225,'导出清单',3202,5,NULL,NULL,1,0,'F','0','0','carbonVerification:voucher:export', '#','admin',NOW(),'',NULL,'');
+
+-- 排放报告按钮权限
+INSERT INTO "public"."sys_menu"("menu_id","menu_name","parent_id","order_num","path","component","is_frame","is_cache","menu_type","visible","status","perms","icon","create_by","create_time","update_by","update_time","remark") VALUES
+(3231,'查询',3203,1,NULL,NULL,1,0,'F','0','0','carbonVerification:report:list',    '#','admin',NOW(),'',NULL,''),
+(3232,'生成',3203,2,NULL,NULL,1,0,'F','0','0','carbonVerification:report:generate','#','admin',NOW(),'',NULL,''),
+(3233,'导出',3203,3,NULL,NULL,1,0,'F','0','0','carbonVerification:report:export',  '#','admin',NOW(),'',NULL,''),
+(3234,'删除',3203,4,NULL,NULL,1,0,'F','0','0','carbonVerification:report:remove',  '#','admin',NOW(),'',NULL,'');
+
+-- 核查材料按钮权限
+INSERT INTO "public"."sys_menu"("menu_id","menu_name","parent_id","order_num","path","component","is_frame","is_cache","menu_type","visible","status","perms","icon","create_by","create_time","update_by","update_time","remark") VALUES
+(3241,'查询',3204,1,NULL,NULL,1,0,'F','0','0','carbonVerification:package:list',    '#','admin',NOW(),'',NULL,''),
+(3242,'打包',3204,2,NULL,NULL,1,0,'F','0','0','carbonVerification:package:generate','#','admin',NOW(),'',NULL,''),
+(3243,'下载',3204,3,NULL,NULL,1,0,'F','0','0','carbonVerification:package:download','#','admin',NOW(),'',NULL,''),
+(3244,'删除',3204,4,NULL,NULL,1,0,'F','0','0','carbonVerification:package:remove',  '#','admin',NOW(),'',NULL,'');
+
+-- 更新序列
+SELECT setval('"public"."menu_id_seq"', 3244, true);
+
+-- ============================================================
+-- 产品碳足迹核算模块 数据库迁移脚本
+-- 数据库: PostgreSQL 14+
+-- 所有表以 ems_pcf_ 开头
+-- ============================================================
+
+-- ─── 1. 产品分类 ───────────────────────────────────────────
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_pcf_category_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_pcf_category" (
+    "id"            BIGINT        NOT NULL DEFAULT nextval('ems_pcf_category_seq'::regclass),
+    "parent_id"     BIGINT        NOT NULL DEFAULT 0,
+    "category_name" VARCHAR(100)  NOT NULL,
+    "category_code" VARCHAR(50),
+    "order_num"     INTEGER       NOT NULL DEFAULT 0,
+    "status"        CHAR(1)       NOT NULL DEFAULT '0',
+    "create_by"     VARCHAR(64),
+    "create_time"   TIMESTAMP,
+    "update_by"     VARCHAR(64),
+    "update_time"   TIMESTAMP,
+    "remark"        VARCHAR(500),
+    CONSTRAINT "ems_pcf_category_pkey" PRIMARY KEY ("id")
+);
+COMMENT ON TABLE  "public"."ems_pcf_category" IS '产品碳足迹-产品分类';
+COMMENT ON COLUMN "public"."ems_pcf_category"."status" IS '状态 0启用 1停用';
+
+-- ─── 2. 产品信息 ───────────────────────────────────────────
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_pcf_product_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_pcf_product" (
+    "id"                   BIGINT        NOT NULL DEFAULT nextval('ems_pcf_product_seq'::regclass),
+    "category_id"          BIGINT        NOT NULL,
+    "product_name"         VARCHAR(200)  NOT NULL,
+    "spec_model"           VARCHAR(100),
+    "unit"                 VARCHAR(20)   NOT NULL DEFAULT '台',
+    "lifecycle_boundary"   VARCHAR(100)  NOT NULL DEFAULT '从摇篮到坟墓',
+    "accounting_standard"  VARCHAR(100)  NOT NULL DEFAULT 'ISO 14067:2018',
+    "functional_unit"      VARCHAR(200),
+    "default_year"         INTEGER,
+    "status"               CHAR(1)       NOT NULL DEFAULT '0',
+    "create_by"            VARCHAR(64),
+    "create_time"          TIMESTAMP,
+    "update_by"            VARCHAR(64),
+    "update_time"          TIMESTAMP,
+    "remark"               VARCHAR(500),
+    CONSTRAINT "ems_pcf_product_pkey" PRIMARY KEY ("id")
+);
+COMMENT ON TABLE  "public"."ems_pcf_product" IS '产品碳足迹-产品信息';
+
+-- ─── 3. 原材料获取 ─────────────────────────────────────────
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_pcf_raw_material_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_pcf_raw_material" (
+    "id"              BIGINT         NOT NULL DEFAULT nextval('ems_pcf_raw_material_seq'::regclass),
+    "product_id"      BIGINT         NOT NULL,
+    "year"            INTEGER        NOT NULL,
+    "material_name"   VARCHAR(200)   NOT NULL,
+    "spec_model"      VARCHAR(100),
+    "quantity"        NUMERIC(18,4)  NOT NULL DEFAULT 0,
+    "unit"            VARCHAR(20),
+    "emission_factor" NUMERIC(18,6)  NOT NULL DEFAULT 0,
+    "factor_unit"     VARCHAR(50),
+    "emission_amount" NUMERIC(18,4)  NOT NULL DEFAULT 0,
+    "emission_unit"   VARCHAR(50)    DEFAULT 'tCO₂e',
+    "data_source"     VARCHAR(100),
+    "create_by"       VARCHAR(64),
+    "create_time"     TIMESTAMP,
+    "update_by"       VARCHAR(64),
+    "update_time"     TIMESTAMP,
+    "remark"          VARCHAR(500),
+    CONSTRAINT "ems_pcf_raw_material_pkey" PRIMARY KEY ("id")
+);
+COMMENT ON TABLE "public"."ems_pcf_raw_material" IS '产品碳足迹-原材料获取';
+
+-- ─── 4. 生产制造 ───────────────────────────────────────────
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_pcf_manufacturing_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_pcf_manufacturing" (
+    "id"                 BIGINT         NOT NULL DEFAULT nextval('ems_pcf_manufacturing_seq'::regclass),
+    "product_id"         BIGINT         NOT NULL,
+    "year"               INTEGER        NOT NULL,
+    "emission_source"    VARCHAR(200)   NOT NULL,
+    "activity_type"      VARCHAR(100),
+    "activity_value"     NUMERIC(18,4)  NOT NULL DEFAULT 0,
+    "unit"               VARCHAR(20),
+    "stat_period_start"  VARCHAR(20),
+    "stat_period_end"    VARCHAR(20),
+    "production_volume"  NUMERIC(18,4),
+    "production_unit"    VARCHAR(20),
+    "carbon_value"       NUMERIC(18,6)  NOT NULL DEFAULT 0,
+    "carbon_unit"        VARCHAR(50)    DEFAULT 'kgCO₂e/台',
+    "create_by"          VARCHAR(64),
+    "create_time"        TIMESTAMP,
+    "update_by"          VARCHAR(64),
+    "update_time"        TIMESTAMP,
+    "remark"             VARCHAR(500),
+    CONSTRAINT "ems_pcf_manufacturing_pkey" PRIMARY KEY ("id")
+);
+COMMENT ON TABLE "public"."ems_pcf_manufacturing" IS '产品碳足迹-生产制造';
+
+-- ─── 5. 物流运输 ───────────────────────────────────────────
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_pcf_logistics_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_pcf_logistics" (
+    "id"               BIGINT         NOT NULL DEFAULT nextval('ems_pcf_logistics_seq'::regclass),
+    "product_id"       BIGINT         NOT NULL,
+    "year"             INTEGER        NOT NULL,
+    "material_name"    VARCHAR(200)   NOT NULL,
+    "spec_model"       VARCHAR(100),
+    "transport_dist"   NUMERIC(18,4)  NOT NULL DEFAULT 0,
+    "dist_unit"        VARCHAR(20)    DEFAULT 'km',
+    "transport_mode"   VARCHAR(50),
+    "emission_factor"  NUMERIC(18,6)  NOT NULL DEFAULT 0,
+    "factor_unit"      VARCHAR(50),
+    "carbon_footprint" NUMERIC(18,4)  NOT NULL DEFAULT 0,
+    "carbon_unit"      VARCHAR(50)    DEFAULT 'tCO₂e',
+    "create_by"        VARCHAR(64),
+    "create_time"      TIMESTAMP,
+    "update_by"        VARCHAR(64),
+    "update_time"      TIMESTAMP,
+    "remark"           VARCHAR(500),
+    CONSTRAINT "ems_pcf_logistics_pkey" PRIMARY KEY ("id")
+);
+COMMENT ON TABLE "public"."ems_pcf_logistics" IS '产品碳足迹-物流运输';
+
+-- ─── 6. 产品使用 ───────────────────────────────────────────
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_pcf_product_use_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_pcf_product_use" (
+    "id"               BIGINT         NOT NULL DEFAULT nextval('ems_pcf_product_use_seq'::regclass),
+    "product_id"       BIGINT         NOT NULL,
+    "year"             INTEGER        NOT NULL,
+    "material_name"    VARCHAR(200)   NOT NULL,
+    "spec_model"       VARCHAR(100),
+    "useful_life"      INTEGER,
+    "annual_consume"   NUMERIC(18,4)  NOT NULL DEFAULT 0,
+    "unit"             VARCHAR(20),
+    "emission_factor"  NUMERIC(18,6)  NOT NULL DEFAULT 0,
+    "factor_unit"      VARCHAR(50),
+    "carbon_footprint" NUMERIC(18,4)  NOT NULL DEFAULT 0,
+    "carbon_unit"      VARCHAR(50)    DEFAULT 'tCO₂e',
+    "create_by"        VARCHAR(64),
+    "create_time"      TIMESTAMP,
+    "update_by"        VARCHAR(64),
+    "update_time"      TIMESTAMP,
+    "remark"           VARCHAR(500),
+    CONSTRAINT "ems_pcf_product_use_pkey" PRIMARY KEY ("id")
+);
+COMMENT ON TABLE "public"."ems_pcf_product_use" IS '产品碳足迹-产品使用';
+
+-- ─── 7. 废弃回收 ───────────────────────────────────────────
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_pcf_eol_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_pcf_eol" (
+    "id"               BIGINT         NOT NULL DEFAULT nextval('ems_pcf_eol_seq'::regclass),
+    "product_id"       BIGINT         NOT NULL,
+    "year"             INTEGER        NOT NULL,
+    "waste_material"   VARCHAR(200)   NOT NULL,
+    "disposal_method"  VARCHAR(100),
+    "weight"           NUMERIC(18,4)  NOT NULL DEFAULT 0,
+    "unit"             VARCHAR(20),
+    "emission_factor"  NUMERIC(18,6)  NOT NULL DEFAULT 0,
+    "factor_unit"      VARCHAR(50),
+    "carbon_footprint" NUMERIC(18,4)  NOT NULL DEFAULT 0,
+    "carbon_unit"      VARCHAR(50)    DEFAULT 'tCO₂e',
+    "is_recycled"      CHAR(1)        DEFAULT '0',
+    "create_by"        VARCHAR(64),
+    "create_time"      TIMESTAMP,
+    "update_by"        VARCHAR(64),
+    "update_time"      TIMESTAMP,
+    "remark"           VARCHAR(500),
+    CONSTRAINT "ems_pcf_eol_pkey" PRIMARY KEY ("id")
+);
+COMMENT ON TABLE "public"."ems_pcf_eol" IS '产品碳足迹-废弃回收';
+
+-- ─── 8. 绿电绿证 ───────────────────────────────────────────
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_pcf_green_cert_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_pcf_green_cert" (
+    "id"                  BIGINT         NOT NULL DEFAULT nextval('ems_pcf_green_cert_seq'::regclass),
+    "product_id"          BIGINT         NOT NULL,
+    "year"                INTEGER        NOT NULL,
+    "cert_type"           VARCHAR(50)    NOT NULL,
+    "cert_no"             VARCHAR(100),
+    "power_type"          VARCHAR(50),
+    "purchase_volume"     NUMERIC(18,4)  NOT NULL DEFAULT 0,
+    "converted_power"     NUMERIC(18,4),
+    "emission_factor"     NUMERIC(18,6)  NOT NULL DEFAULT 0,
+    "emission_reduction"  NUMERIC(18,4)  NOT NULL DEFAULT 0,
+    "validity_start"      VARCHAR(20),
+    "validity_end"        VARCHAR(20),
+    "status"              CHAR(1)        DEFAULT '0',
+    "create_by"           VARCHAR(64),
+    "create_time"         TIMESTAMP,
+    "update_by"           VARCHAR(64),
+    "update_time"         TIMESTAMP,
+    "remark"              VARCHAR(500),
+    CONSTRAINT "ems_pcf_green_cert_pkey" PRIMARY KEY ("id")
+);
+COMMENT ON TABLE "public"."ems_pcf_green_cert" IS '产品碳足迹-绿电绿证';
+COMMENT ON COLUMN "public"."ems_pcf_green_cert"."status" IS '状态 0待核验 1已核验';
+
+-- ─── 9. 排放因子库 ─────────────────────────────────────────
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_pcf_emission_factor_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_pcf_emission_factor" (
+    "id"               BIGINT         NOT NULL DEFAULT nextval('ems_pcf_emission_factor_seq'::regclass),
+    "factor_name"      VARCHAR(200)   NOT NULL,
+    "spec_type"        VARCHAR(100),
+    "factor_category"  VARCHAR(50)    NOT NULL,
+    "emission_factor"  NUMERIC(18,6)  NOT NULL DEFAULT 0,
+    "factor_unit"      VARCHAR(50),
+    "data_source"      VARCHAR(100),
+    "reference_year"   INTEGER,
+    "applicable_scope" VARCHAR(100),
+    "is_recycled"      CHAR(1)        DEFAULT '0',
+    "is_builtin"       CHAR(1)        DEFAULT '0',
+    "status"           CHAR(1)        DEFAULT '0',
+    "create_by"        VARCHAR(64),
+    "create_time"      TIMESTAMP,
+    "update_by"        VARCHAR(64),
+    "update_time"      TIMESTAMP,
+    "remark"           VARCHAR(500),
+    CONSTRAINT "ems_pcf_emission_factor_pkey" PRIMARY KEY ("id")
+);
+COMMENT ON TABLE "public"."ems_pcf_emission_factor" IS '产品碳足迹-排放因子库';
+COMMENT ON COLUMN "public"."ems_pcf_emission_factor"."factor_category" IS '分类: raw/energy/transport/waste';
+
+-- ─── 10. 绿证减排系数 ──────────────────────────────────────
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_pcf_green_cert_factor_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_pcf_green_cert_factor" (
+    "id"                BIGINT         NOT NULL DEFAULT nextval('ems_pcf_green_cert_factor_seq'::regclass),
+    "cert_type"         VARCHAR(50)    NOT NULL,
+    "power_type"        VARCHAR(50)    NOT NULL,
+    "emission_factor"   NUMERIC(18,6)  NOT NULL DEFAULT 0,
+    "factor_unit"       VARCHAR(50)    DEFAULT 'tCO₂e/MWh',
+    "reference_standard" VARCHAR(200),
+    "applicable_region" VARCHAR(100),
+    "reference_year"    INTEGER,
+    "status"            CHAR(1)        DEFAULT '0',
+    "create_by"         VARCHAR(64),
+    "create_time"       TIMESTAMP,
+    "update_by"         VARCHAR(64),
+    "update_time"       TIMESTAMP,
+    "remark"            VARCHAR(500),
+    CONSTRAINT "ems_pcf_green_cert_factor_pkey" PRIMARY KEY ("id")
+);
+COMMENT ON TABLE "public"."ems_pcf_green_cert_factor" IS '产品碳足迹-绿证减排系数';
+
+-- ─── 11. 核算参数 ──────────────────────────────────────────
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_pcf_accounting_params_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_pcf_accounting_params" (
+    "id"           BIGINT        NOT NULL DEFAULT nextval('ems_pcf_accounting_params_seq'::regclass),
+    "param_key"    VARCHAR(100)  NOT NULL,
+    "param_value"  TEXT,
+    "param_type"   VARCHAR(50),
+    "param_label"  VARCHAR(200),
+    "create_by"    VARCHAR(64),
+    "create_time"  TIMESTAMP,
+    "update_by"    VARCHAR(64),
+    "update_time"  TIMESTAMP,
+    "remark"       VARCHAR(500),
+    CONSTRAINT "ems_pcf_accounting_params_pkey"  PRIMARY KEY ("id"),
+    CONSTRAINT "uk_ems_pcf_accounting_params_key" UNIQUE ("param_key")
+);
+COMMENT ON TABLE "public"."ems_pcf_accounting_params" IS '产品碳足迹-核算参数';
+
+-- ─── 12. 生成报告 ──────────────────────────────────────────
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_pcf_report_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_pcf_report" (
+    "id"                 BIGINT         NOT NULL DEFAULT nextval('ems_pcf_report_seq'::regclass),
+    "product_id"         BIGINT         NOT NULL,
+    "year"               INTEGER        NOT NULL,
+    "report_no"          VARCHAR(100),
+    "total_footprint"    NUMERIC(18,4),
+    "net_footprint"      NUMERIC(18,4),
+    "accounting_standard" VARCHAR(100),
+    "lifecycle_boundary" VARCHAR(100),
+    "report_content"     TEXT,
+    "create_by"          VARCHAR(64),
+    "create_time"        TIMESTAMP,
+    "update_by"          VARCHAR(64),
+    "update_time"        TIMESTAMP,
+    "remark"             VARCHAR(500),
+    CONSTRAINT "ems_pcf_report_pkey" PRIMARY KEY ("id")
+);
+COMMENT ON TABLE "public"."ems_pcf_report" IS '产品碳足迹-生成报告';
+
+-- ─── 菜单数据 ──────────────────────────────────────────────
+INSERT INTO "public"."sys_menu"
+("menu_id","menu_name","parent_id","order_num","path","component","is_frame","is_cache","menu_type","visible","status","perms","icon","create_by","create_time","update_by","update_time","remark")
+VALUES
+(3244,'产品碳足迹',0,50,'productCarbonFootprint',NULL,1,0,'M','0','0','','carbon','admin',NOW(),'',NULL,'产品碳足迹核算'),
+-- 页面
+(3245,'碳足迹核算',3244,1,'pcfAccounting','productCarbonFootprint/index',1,0,'C','0','0','pcf:footprint:list','list','admin',NOW(),'',NULL,'碳足迹核算页面'),
+(3246,'碳足迹配置',3244,2,'config','productCarbonFootprint/config/index',1,0,'C','0','0','pcf:config:list','documentation','admin',NOW(),'',NULL,'碳足迹配置页面'),
+-- 原材料按钮
+(3247,'原材料-新增',3245,1,'','',1,0,'F','0','0','pcf:raw:add','','admin',NOW(),'',NULL,''),
+(3248,'原材料-导入',3245,2,'','',1,0,'F','0','0','pcf:raw:import','','admin',NOW(),'',NULL,''),
+(3249,'原材料-删除',3245,3,'','',1,0,'F','0','0','pcf:raw:remove','','admin',NOW(),'',NULL,''),
+-- 生产制造按钮
+(3250,'生产制造-新增',3245,4,'','',1,0,'F','0','0','pcf:mfg:add','','admin',NOW(),'',NULL,''),
+(3251,'生产制造-删除',3245,5,'','',1,0,'F','0','0','pcf:mfg:remove','','admin',NOW(),'',NULL,''),
+-- 物流运输按钮
+(3252,'物流运输-新增',3245,6,'','',1,0,'F','0','0','pcf:log:add','','admin',NOW(),'',NULL,''),
+(3253,'物流运输-删除',3245,7,'','',1,0,'F','0','0','pcf:log:remove','','admin',NOW(),'',NULL,''),
+-- 绿证按钮
+(3254,'绿证-新增',3245,8,'','',1,0,'F','0','0','pcf:cert:add','','admin',NOW(),'',NULL,''),
+(3255,'绿证-删除',3245,9,'','',1,0,'F','0','0','pcf:cert:remove','','admin',NOW(),'',NULL,''),
+-- 排放因子按钮
+(3256,'排放因子-新增',3246,1,'','',1,0,'F','0','0','pcf:factor:add','','admin',NOW(),'',NULL,''),
+(3257,'排放因子-删除',3246,2,'','',1,0,'F','0','0','pcf:factor:remove','','admin',NOW(),'',NULL,''),
+-- 报告
+(3258,'生成报告',3245,10,'','',1,0,'F','0','0','pcf:report:generate','','admin',NOW(),'',NULL,'');
+
+
+
+-- ─── 内置排放因子数据 ──────────────────────────────────────
+INSERT INTO "public"."ems_pcf_emission_factor"
+(factor_name,spec_type,factor_category,emission_factor,factor_unit,data_source,reference_year,applicable_scope,is_recycled,is_builtin,status,create_by,create_time)
+VALUES
+('硅钢片','电工钢/冷轧取向','raw',8259.19,'kgCO₂e/t','国家因子库2024',2024,'中国大陆','0','1','0','admin',NOW()),
+('铜(电磁线)','精炼铜/铜线','raw',5257.82,'kgCO₂e/t','国家因子库2024',2024,'中国大陆','0','1','0','admin',NOW()),
+('钢铁(本体钢制)','普通碳素钢','raw',2334.13,'kgCO₂e/t','国家因子库2024',2024,'中国大陆','0','1','0','admin',NOW()),
+('绝缘纸板','纸板/电工用','raw',762.59,'kgCO₂e/t','ecoinvent 3.9',2023,'全球','0','1','0','admin',NOW()),
+('绝缘油','变压器油/矿物油','raw',1607.29,'kgCO₂e/t','国家因子库2024',2024,'中国大陆','0','1','0','admin',NOW()),
+('铝(散热片)','原铝/铸造铝','raw',11200.00,'kgCO₂e/t','国家因子库2024',2024,'中国大陆','0','1','0','admin',NOW()),
+('电力','外购电力','energy',0.5810,'kgCO₂e/KWh','国家因子库2024',2024,'华东电网','0','1','0','admin',NOW()),
+('天然气','固定燃烧源','energy',2.1622,'kgCO₂e/Nm³','国家因子库2024',2024,'全国','0','1','0','admin',NOW()),
+('蒸汽(热力)','外购热力','energy',0.1100,'kgCO₂e/MJ','国家因子库2024',2024,'全国','0','1','0','admin',NOW()),
+('公路运输','重型货车(>14t)','transport',0.3900,'kgCO₂e/t·km','国家因子库2024',2024,'中国大陆','0','1','0','admin',NOW()),
+('铁路运输','电力机车货运','transport',0.1600,'kgCO₂e/t·km','国家因子库2024',2024,'中国大陆','0','1','0','admin',NOW()),
+('海运/航运','散货船/集装箱船','transport',0.1000,'kgCO₂e/t·km','ecoinvent 3.9',2023,'全球','0','1','0','admin',NOW()),
+('混合固废','填埋','waste',0.4690,'kgCO₂e/kg','国家因子库2024',2024,'全国','0','1','0','admin',NOW()),
+('废铜','回收再利用','waste',-3850.00,'kgCO₂e/t','ecoinvent 3.9',2023,'全球','1','1','0','admin',NOW()),
+('废钢','回收再利用','waste',-1680.00,'kgCO₂e/t','国家因子库2024',2024,'全国','1','1','0','admin',NOW())
+ON CONFLICT DO NOTHING;
+
+-- ─── 内置绿证减排系数 ──────────────────────────────────────
+INSERT INTO "public"."ems_pcf_green_cert_factor"
+(cert_type,power_type,emission_factor,factor_unit,reference_standard,applicable_region,reference_year,status,create_by,create_time)
+VALUES
+('I-REC','光伏',0.5810,'tCO₂e/MWh','国家电网2024年基准线','华东电网',2024,'0','admin',NOW()),
+('I-REC','风电',0.5810,'tCO₂e/MWh','国家电网2024年基准线','华东电网',2024,'0','admin',NOW()),
+('绿电证书GEC','风电',0.5810,'tCO₂e/MWh','国家电网2024年基准线','华北电网',2024,'0','admin',NOW()),
+('I-REC','水电',0.2500,'tCO₂e/MWh','水电特定排放因子','全国',2024,'0','admin',NOW()),
+('GO(欧盟)','光伏',0.2330,'tCO₂e/MWh','欧盟电网基准线2023','欧盟',2023,'0','admin',NOW())
+ON CONFLICT DO NOTHING;
+
+-- ─── 内置核算参数 ──────────────────────────────────────────
+INSERT INTO "public"."ems_pcf_accounting_params"
+(param_key,param_value,param_type,param_label,create_by,create_time)
+VALUES
+('lifecycle_boundary','从摇篮到坟墓（Cradle-to-Grave）','select','默认生命周期边界','admin',NOW()),
+('gwp_timespan','GWP100（100年）—— ISO 14067推荐','select','GWP时间跨度','admin',NOW()),
+('cutoff_threshold','1%','text','截止规则阈值','admin',NOW()),
+('data_quality_level','Level 2 — 行业平均数据','select','数据质量最低要求','admin',NOW()),
+('gwp_reference','IPCC AR6（第六次评估报告）','select','GWP参考来源','admin',NOW()),
+('factor_priority','国家因子库 → ecoinvent → IPCC → 供应商实测','select','排放因子数据库优先级','admin',NOW()),
+('accounting_standard','ISO 14067:2018','multicheck','适用核算标准','admin',NOW()),
+('uncertainty_enabled','1','radio','是否启用不确定性分析','admin',NOW()),
+('uncertainty_method','Monte Carlo 蒙特卡洛模拟','select','不确定性分析方法','admin',NOW()),
+('confidence_interval','95%','select','置信区间','admin',NOW()),
+('sensitivity_range','±10%','text','敏感性分析变化幅度','admin',NOW()),
+('cert_allocation_method','by_electricity','radio','绿证分配方式','admin',NOW()),
+('report_number_prefix','PCF','text','报告编号前缀','admin',NOW()),
+('report_validity_years','3','text','声明有效期(年)','admin',NOW())
+ON CONFLICT (param_key) DO UPDATE SET
+    param_value  = EXCLUDED.param_value,
+    update_by    = 'admin',
+    update_time  = NOW();
+
+-- =====================================================
+-- 供应链碳管理模块 - 数据库迁移脚本
+-- 创建日期：2026-04-28
+-- =====================================================
+
+-- ---- 1. 建表：供应链碳数据 ----
+
+CREATE SEQUENCE IF NOT EXISTS "public"."supply_chain_carbon_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."supply_chain_carbon" (
+    "id"                  BIGINT        NOT NULL DEFAULT nextval('supply_chain_carbon_seq'::regclass),
+    "supplier_name"       VARCHAR(100)  NOT NULL,
+    "material_category"   VARCHAR(50)   NOT NULL,
+    "supply_material"     VARCHAR(100)  NOT NULL,
+    "spec_model"          VARCHAR(100),
+    "system_boundary"     VARCHAR(50)   NOT NULL,
+    "material_total"      NUMERIC(18,4) NOT NULL DEFAULT 0,
+    "material_unit"       VARCHAR(20)   NOT NULL,
+    "carbon_footprint"    NUMERIC(18,4) NOT NULL DEFAULT 0,
+    "carbon_footprint_unit" VARCHAR(20) NOT NULL,
+    "contact_person"      VARCHAR(50),
+    "contact_way"         VARCHAR(100),
+    "supplier_address"    VARCHAR(200),
+    "create_by"           VARCHAR(64),
+    "create_time"         TIMESTAMP,
+    "update_by"           VARCHAR(64),
+    "update_time"         TIMESTAMP,
+    "remark"              VARCHAR(500),
+    CONSTRAINT "supply_chain_carbon_pkey" PRIMARY KEY ("id")
+);
+
+COMMENT ON TABLE "public"."supply_chain_carbon" IS '供应链碳管理';
+COMMENT ON COLUMN "public"."supply_chain_carbon"."supplier_name"     IS '供应商名称';
+COMMENT ON COLUMN "public"."supply_chain_carbon"."material_category" IS '物料分类';
+COMMENT ON COLUMN "public"."supply_chain_carbon"."supply_material"   IS '供应物料名称';
+COMMENT ON COLUMN "public"."supply_chain_carbon"."spec_model"        IS '规格型号';
+COMMENT ON COLUMN "public"."supply_chain_carbon"."system_boundary"   IS '系统边界';
+COMMENT ON COLUMN "public"."supply_chain_carbon"."material_total"    IS '物料总量';
+COMMENT ON COLUMN "public"."supply_chain_carbon"."material_unit"     IS '物料单位';
+COMMENT ON COLUMN "public"."supply_chain_carbon"."carbon_footprint"  IS '碳足迹总量';
+COMMENT ON COLUMN "public"."supply_chain_carbon"."carbon_footprint_unit" IS '碳足迹单位';
+COMMENT ON COLUMN "public"."supply_chain_carbon"."contact_person"    IS '联系人';
+COMMENT ON COLUMN "public"."supply_chain_carbon"."contact_way"       IS '联系方式';
+COMMENT ON COLUMN "public"."supply_chain_carbon"."supplier_address"  IS '供应商地址';
+
+-- ---- 2. 菜单数据 ----
+-- 父级目录菜单（menu_type='M'，放在碳资产管理前面，order_num=55）
+INSERT INTO "public"."sys_menu"
+    ("menu_id", "menu_name", "parent_id", "order_num", "path", "component",
+     "is_frame", "is_cache", "menu_type", "visible", "status",
+     "perms", "icon", "create_by", "create_time", "update_by", "update_time", "remark")
+VALUES
+    (3104, '供应链碳管理', 0, 60, 'supplyChainCarbon', NULL,
+     1, 0, 'M', '0', '0',
+     '', 'tree', 'admin', NOW(), '', NULL, '供应链碳管理父菜单')
+ON CONFLICT ("menu_id") DO NOTHING;
+
+-- 页面菜单（menu_type='C'）
+INSERT INTO "public"."sys_menu"
+    ("menu_id", "menu_name", "parent_id", "order_num", "path", "component",
+     "is_frame", "is_cache", "menu_type", "visible", "status",
+     "perms", "icon", "create_by", "create_time", "update_by", "update_time", "remark")
+VALUES
+    (3105, '供应链碳管理', 3104, 1, 'supplychaincarbon', 'supplychaincarbon/index',
+     1, 0, 'C', '0', '0',
+     'supplyChainCarbon:supplier:list', 'list', 'admin', NOW(), '', NULL, '供应链碳管理页面')
+ON CONFLICT ("menu_id") DO NOTHING;
+
+-- 按钮权限
+INSERT INTO "public"."sys_menu"
+    ("menu_id", "menu_name", "parent_id", "order_num", "path", "component",
+     "is_frame", "is_cache", "menu_type", "visible", "status",
+     "perms", "icon", "create_by", "create_time", "update_by", "update_time", "remark")
+VALUES
+    (3106, '查询', 3105, 1, '', NULL, 1, 0, 'F', '0', '0', 'supplyChainCarbon:supplier:list', '#', 'admin', NOW(), '', NULL, ''),
+    (3107, '新增', 3105, 2, '', NULL, 1, 0, 'F', '0', '0', 'supplyChainCarbon:supplier:add',  '#', 'admin', NOW(), '', NULL, ''),
+    (3108, '编辑', 3105, 3, '', NULL, 1, 0, 'F', '0', '0', 'supplyChainCarbon:supplier:edit', '#', 'admin', NOW(), '', NULL, ''),
+    (3109, '删除', 3105, 4, '', NULL, 1, 0, 'F', '0', '0', 'supplyChainCarbon:supplier:delete', '#', 'admin', NOW(), '', NULL, '')
+ON CONFLICT ("menu_id") DO NOTHING;
+
+SELECT setval('"public"."menu_id_seq"', 3109, true);
+
+-- =====================================================
+-- 用能与碳排放预算管理模块 - 数据库迁移脚本
+-- 创建日期：2026-05-11
+-- 菜单 ID 范围：3350 ~ 3370
+-- =====================================================
+
+-- ======================================================
+-- 1. 用能预算表 ems_energy_budget
+-- ======================================================
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_energy_budget_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_energy_budget" (
+    "id"                      BIGINT         NOT NULL DEFAULT nextval('ems_energy_budget_seq'::regclass),
+    "budget_name"             VARCHAR(100)   NOT NULL,
+    "budget_type"             VARCHAR(20)    NOT NULL,   -- YEAR / MONTH / CUSTOM
+    "budget_year"             INTEGER,
+    "budget_month"            INTEGER,                   -- 1-12，MONTH 类型时有值
+    "budget_start"            DATE,                      -- CUSTOM 类型起始日期
+    "budget_end"              DATE,                      -- CUSTOM 类型结束日期
+    "energy_type"             VARCHAR(20)    NOT NULL,   -- ELECTRICITY/GAS/STEAM/COAL/OIL
+    "energy_unit"             VARCHAR(20)    NOT NULL,   -- KWh/m³/GJ/吨
+    "region_type"             VARCHAR(20)    NOT NULL,   -- FACTORY/WORKSHOP/SECTION/DEVICE
+    "region_name"             VARCHAR(100)   NOT NULL,
+    "unit_consumption"        NUMERIC(18,4),             -- 产品单耗
+    "unit_consumption_source" VARCHAR(50),               -- INDICATOR/PERFORMANCE/HISTORY/MANUAL
+    "plan_quantity"           NUMERIC(18,4)  NOT NULL,   -- 计划产量
+    "plan_quantity_unit"      VARCHAR(20)    NOT NULL DEFAULT '吨',
+    "budget_energy"           NUMERIC(18,4)  NOT NULL,   -- 预算能耗（自动计算）
+    "warning_threshold"       INTEGER        NOT NULL DEFAULT 90,
+    "status"                  CHAR(1)        NOT NULL DEFAULT '0', -- 0正常 1停用
+    "create_by"               VARCHAR(64),
+    "create_time"             TIMESTAMP,
+    "update_by"               VARCHAR(64),
+    "update_time"             TIMESTAMP,
+    "remark"                  VARCHAR(500),
+    CONSTRAINT "ems_energy_budget_pkey" PRIMARY KEY ("id")
+);
+
+COMMENT ON TABLE  "public"."ems_energy_budget"                        IS '用能预算';
+COMMENT ON COLUMN "public"."ems_energy_budget"."budget_name"          IS '预算名称';
+COMMENT ON COLUMN "public"."ems_energy_budget"."budget_type"          IS '预算类型：YEAR/MONTH/CUSTOM';
+COMMENT ON COLUMN "public"."ems_energy_budget"."budget_year"          IS '预算年份';
+COMMENT ON COLUMN "public"."ems_energy_budget"."budget_month"         IS '预算月份，月类型时使用';
+COMMENT ON COLUMN "public"."ems_energy_budget"."budget_start"         IS '自定义起始日期';
+COMMENT ON COLUMN "public"."ems_energy_budget"."budget_end"           IS '自定义结束日期';
+COMMENT ON COLUMN "public"."ems_energy_budget"."energy_type"          IS '能源类型';
+COMMENT ON COLUMN "public"."ems_energy_budget"."energy_unit"          IS '能源单位';
+COMMENT ON COLUMN "public"."ems_energy_budget"."region_type"          IS '地区类型';
+COMMENT ON COLUMN "public"."ems_energy_budget"."region_name"          IS '对应地区名称';
+COMMENT ON COLUMN "public"."ems_energy_budget"."unit_consumption"     IS '产品单耗';
+COMMENT ON COLUMN "public"."ems_energy_budget"."unit_consumption_source" IS '单耗来源';
+COMMENT ON COLUMN "public"."ems_energy_budget"."plan_quantity"        IS '计划产量';
+COMMENT ON COLUMN "public"."ems_energy_budget"."plan_quantity_unit"   IS '产量单位';
+COMMENT ON COLUMN "public"."ems_energy_budget"."budget_energy"        IS '预算能耗（unit_consumption × plan_quantity）';
+COMMENT ON COLUMN "public"."ems_energy_budget"."warning_threshold"    IS '预警阈值百分比，默认90';
+COMMENT ON COLUMN "public"."ems_energy_budget"."status"               IS '状态：0正常 1停用';
+
+-- ======================================================
+-- 2. 碳排放预算表 ems_carbon_budget
+-- ======================================================
+CREATE SEQUENCE IF NOT EXISTS "public"."ems_carbon_budget_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."ems_carbon_budget" (
+    "id"                  BIGINT         NOT NULL DEFAULT nextval('ems_carbon_budget_seq'::regclass),
+    "boundary_name"       VARCHAR(100)   NOT NULL,       -- 预算边界名称
+    "budget_type"         VARCHAR(30)    NOT NULL,       -- TOTAL_CONTROL/VALUE_INTENSITY/QTY_INTENSITY
+    "budget_time_type"    VARCHAR(10)    NOT NULL,       -- YEAR/MONTH
+    "budget_year"         INTEGER        NOT NULL,
+    "budget_month"        INTEGER,                       -- 1-12，月类型时有值
+    "regulation_standard" VARCHAR(100),                  -- 监管标准
+    "emission_intensity"  NUMERIC(18,4),                 -- 排放强度（tCO₂e/万元 或 tCO₂e/吨）
+    "plan_value"          NUMERIC(18,4),                 -- 计划产值或产量
+    "plan_value_unit"     VARCHAR(20),                   -- 计划单位：万元/吨
+    "budget_emission"     NUMERIC(18,4)  NOT NULL,       -- 预算排放量（tCO₂e）
+    "warning_threshold"   INTEGER        NOT NULL DEFAULT 90,
+    "warning_method"      VARCHAR(20)    NOT NULL DEFAULT 'SYSTEM', -- SYSTEM/EMAIL/BOTH
+    "status"              CHAR(1)        NOT NULL DEFAULT '0',
+    "create_by"           VARCHAR(64),
+    "create_time"         TIMESTAMP,
+    "update_by"           VARCHAR(64),
+    "update_time"         TIMESTAMP,
+    "remark"              VARCHAR(500),
+    CONSTRAINT "ems_carbon_budget_pkey" PRIMARY KEY ("id")
+);
+
+COMMENT ON TABLE  "public"."ems_carbon_budget"                     IS '碳排放预算';
+COMMENT ON COLUMN "public"."ems_carbon_budget"."boundary_name"     IS '预算边界名称';
+COMMENT ON COLUMN "public"."ems_carbon_budget"."budget_type"       IS '预算类型：TOTAL_CONTROL/VALUE_INTENSITY/QTY_INTENSITY';
+COMMENT ON COLUMN "public"."ems_carbon_budget"."budget_time_type"  IS '时间类型：YEAR/MONTH';
+COMMENT ON COLUMN "public"."ems_carbon_budget"."budget_year"       IS '预算年份';
+COMMENT ON COLUMN "public"."ems_carbon_budget"."budget_month"      IS '预算月份';
+COMMENT ON COLUMN "public"."ems_carbon_budget"."regulation_standard" IS '监管标准';
+COMMENT ON COLUMN "public"."ems_carbon_budget"."emission_intensity" IS '排放强度';
+COMMENT ON COLUMN "public"."ems_carbon_budget"."plan_value"        IS '计划产值或产量';
+COMMENT ON COLUMN "public"."ems_carbon_budget"."plan_value_unit"   IS '产值/产量单位';
+COMMENT ON COLUMN "public"."ems_carbon_budget"."budget_emission"   IS '预算排放量（tCO₂e）';
+COMMENT ON COLUMN "public"."ems_carbon_budget"."warning_threshold" IS '预警阈值百分比';
+COMMENT ON COLUMN "public"."ems_carbon_budget"."warning_method"    IS '预警通知方式';
+
+-- ======================================================
+-- 3. 菜单与权限
+-- ======================================================
+
+-- 父级目录（menu_type='M'）
+INSERT INTO "public"."sys_menu"
+    ("menu_id","menu_name","parent_id","order_num","path","component",
+     "is_frame","is_cache","menu_type","visible","status",
+     "perms","icon","create_by","create_time","update_by","update_time","remark")
+VALUES
+    (3350,'用能与碳排放预算',0,40,'budget',NULL,
+     1,0,'M','0','0',
+     '','wallet','admin',NOW(),'',NULL,'预算管理父菜单')
+ON CONFLICT ("menu_id") DO NOTHING;
+
+-- 用能预算页面（menu_type='C'）
+INSERT INTO "public"."sys_menu"
+    ("menu_id","menu_name","parent_id","order_num","path","component",
+     "is_frame","is_cache","menu_type","visible","status",
+     "perms","icon","create_by","create_time","update_by","update_time","remark")
+VALUES
+    (3351,'用能预算',3350,1,'energybudget','budget/energy/index',
+     1,0,'C','0','0',
+     'budget:energy:list','table','admin',NOW(),'',NULL,'用能预算管理页面')
+ON CONFLICT ("menu_id") DO NOTHING;
+
+-- 用能预算按钮权限（menu_type='F'）
+INSERT INTO "public"."sys_menu"
+    ("menu_id","menu_name","parent_id","order_num","path","component",
+     "is_frame","is_cache","menu_type","visible","status",
+     "perms","icon","create_by","create_time","update_by","update_time","remark")
+VALUES
+    (3352,'查询',3351,1,NULL,NULL,1,0,'F','0','0','budget:energy:list',  '#','admin',NOW(),'',NULL,''),
+    (3353,'新增',3351,2,NULL,NULL,1,0,'F','0','0','budget:energy:add',   '#','admin',NOW(),'',NULL,''),
+    (3354,'编辑',3351,3,NULL,NULL,1,0,'F','0','0','budget:energy:edit',  '#','admin',NOW(),'',NULL,''),
+    (3355,'删除',3351,4,NULL,NULL,1,0,'F','0','0','budget:energy:delete','#','admin',NOW(),'',NULL,''),
+    (3356,'导出',3351,5,NULL,NULL,1,0,'F','0','0','budget:energy:export','#','admin',NOW(),'',NULL,'')
+ON CONFLICT ("menu_id") DO NOTHING;
+
+-- 碳排放预算页面（menu_type='C'）
+INSERT INTO "public"."sys_menu"
+    ("menu_id","menu_name","parent_id","order_num","path","component",
+     "is_frame","is_cache","menu_type","visible","status",
+     "perms","icon","create_by","create_time","update_by","update_time","remark")
+VALUES
+    (3357,'碳排放预算',3350,2,'carbonbudget','budget/carbon/index',
+     1,0,'C','0','0',
+     'budget:carbon:list','documentation','admin',NOW(),'',NULL,'碳排放预算管理页面')
+ON CONFLICT ("menu_id") DO NOTHING;
+
+-- 碳排放预算按钮权限
+INSERT INTO "public"."sys_menu"
+    ("menu_id","menu_name","parent_id","order_num","path","component",
+     "is_frame","is_cache","menu_type","visible","status",
+     "perms","icon","create_by","create_time","update_by","update_time","remark")
+VALUES
+    (3358,'查询',3357,1,NULL,NULL,1,0,'F','0','0','budget:carbon:list',  '#','admin',NOW(),'',NULL,''),
+    (3359,'新增',3357,2,NULL,NULL,1,0,'F','0','0','budget:carbon:add',   '#','admin',NOW(),'',NULL,''),
+    (3360,'编辑',3357,3,NULL,NULL,1,0,'F','0','0','budget:carbon:edit',  '#','admin',NOW(),'',NULL,''),
+    (3361,'删除',3357,4,NULL,NULL,1,0,'F','0','0','budget:carbon:delete','#','admin',NOW(),'',NULL,''),
+    (3362,'导出',3357,5,NULL,NULL,1,0,'F','0','0','budget:carbon:export','#','admin',NOW(),'',NULL,'')
+ON CONFLICT ("menu_id") DO NOTHING;
+
+-- 预算执行分析页面（menu_type='C'）
+INSERT INTO "public"."sys_menu"
+    ("menu_id","menu_name","parent_id","order_num","path","component",
+     "is_frame","is_cache","menu_type","visible","status",
+     "perms","icon","create_by","create_time","update_by","update_time","remark")
+VALUES
+    (3363,'预算执行分析',3350,3,'budgetanalysis','budget/analysis/index',
+     1,0,'C','0','0',
+     'budget:analysis:list','documentation','admin',NOW(),'',NULL,'预算执行分析页面')
+ON CONFLICT ("menu_id") DO NOTHING;
+
+-- 预算执行分析按钮权限
+INSERT INTO "public"."sys_menu"
+    ("menu_id","menu_name","parent_id","order_num","path","component",
+     "is_frame","is_cache","menu_type","visible","status",
+     "perms","icon","create_by","create_time","update_by","update_time","remark")
+VALUES
+    (3364,'查询',3363,1,NULL,NULL,1,0,'F','0','0','budget:analysis:list',  '#','admin',NOW(),'',NULL,''),
+    (3365,'导出',3363,2,NULL,NULL,1,0,'F','0','0','budget:analysis:export','#','admin',NOW(),'',NULL,'')
+ON CONFLICT ("menu_id") DO NOTHING;
+
+-- ======================================================
+-- 补丁：为预算表添加 node_id 外键，关联 model_node
+-- 创建日期：2026-05-11
+-- ======================================================
+
+ALTER TABLE ems_energy_budget
+    ADD COLUMN IF NOT EXISTS node_id VARCHAR(36);
+COMMENT ON COLUMN ems_energy_budget.node_id IS '关联模型节点ID（model_node.node_id），用于查询实际能耗';
+
+ALTER TABLE ems_carbon_budget
+    ADD COLUMN IF NOT EXISTS node_id VARCHAR(36);
+COMMENT ON COLUMN ems_carbon_budget.node_id IS '关联模型节点ID（model_node.node_id），用于查询实际排放';
+
+-- =====================================================
+-- 碳资产管理模块 - 数据库迁移脚本
+-- 创建日期：2026-04-28
+-- =====================================================
+
+-- ---- 1. 建表：碳资产数据 ----
+
+CREATE SEQUENCE IF NOT EXISTS "public"."carbon_asset_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."carbon_asset" (
+    "id"          BIGINT        NOT NULL DEFAULT nextval('carbon_asset_seq'::regclass),
+    "year"        INTEGER       NOT NULL,
+    "asset_type"  VARCHAR(20)   NOT NULL,
+    "sub_type"    VARCHAR(50)   NOT NULL,
+    "type_name"   VARCHAR(100)  NOT NULL,
+    "quantity"    NUMERIC(18,4) NOT NULL DEFAULT 0,
+    "unit"        VARCHAR(20)   NOT NULL,
+    "create_by"   VARCHAR(64),
+    "create_time" TIMESTAMP,
+    "update_by"   VARCHAR(64),
+    "update_time" TIMESTAMP,
+    "remark"      VARCHAR(500),
+    CONSTRAINT "carbon_asset_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "uk_carbon_asset" UNIQUE ("year", "asset_type", "sub_type")
+);
+
+COMMENT ON TABLE  "public"."carbon_asset"             IS '碳资产数据';
+COMMENT ON COLUMN "public"."carbon_asset"."year"       IS '年度';
+COMMENT ON COLUMN "public"."carbon_asset"."asset_type" IS '资产大类：QUOTA-碳配额 CCER-核证减排量 GREEN_CERT-绿证';
+COMMENT ON COLUMN "public"."carbon_asset"."sub_type"   IS '细分类型代码';
+COMMENT ON COLUMN "public"."carbon_asset"."type_name"  IS '界面显示名称';
+COMMENT ON COLUMN "public"."carbon_asset"."quantity"   IS '数量';
+COMMENT ON COLUMN "public"."carbon_asset"."unit"       IS '单位：tCO₂ / 个';
+
+-- ---- 2. 建表：月度碳配额 ----
+
+CREATE SEQUENCE IF NOT EXISTS "public"."carbon_monthly_quota_seq" START 1 INCREMENT 1;
+
+CREATE TABLE IF NOT EXISTS "public"."carbon_monthly_quota" (
+    "id"            BIGINT        NOT NULL DEFAULT nextval('carbon_monthly_quota_seq'::regclass),
+    "year"          INTEGER       NOT NULL,
+    "month"         INTEGER       NOT NULL,
+    "monthly_quota" NUMERIC(18,4) NOT NULL DEFAULT 0,
+    "unit"          VARCHAR(20)   NOT NULL DEFAULT 'tCO₂',
+    "create_by"     VARCHAR(64),
+    "create_time"   TIMESTAMP,
+    "update_by"     VARCHAR(64),
+    "update_time"   TIMESTAMP,
+    CONSTRAINT "carbon_monthly_quota_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "uk_carbon_monthly_quota" UNIQUE ("year", "month")
+);
+
+COMMENT ON TABLE  "public"."carbon_monthly_quota"                IS '月度碳配额分配';
+COMMENT ON COLUMN "public"."carbon_monthly_quota"."year"         IS '年度';
+COMMENT ON COLUMN "public"."carbon_monthly_quota"."month"        IS '月份 1-12';
+COMMENT ON COLUMN "public"."carbon_monthly_quota"."monthly_quota" IS '月度碳配额数量';
+COMMENT ON COLUMN "public"."carbon_monthly_quota"."unit"         IS '单位';
+
+-- ---- 3. 菜单与权限 ----
+-- 注意：menu_id 从 3100 起，不与现有数据冲突（当前最大值 2781）
+-- 碳资产管理父级菜单 order_num=60，排在系统配置(70)之前
+
+-- 3.1 父级目录菜单：碳资产管理
+INSERT INTO "public"."sys_menu" ("menu_id","menu_name","parent_id","order_num","path","component","is_frame","menu_type","visible","perms","icon","create_by","create_time","update_by","update_time","remark","page_parameter","query","status","is_cache")
+VALUES (3100, '碳资产管理', 0, 65, 'carbonasset', NULL, '1', 'M', '0', '', 'edit', 'admin', NOW(), NULL, NULL, NULL, NULL, NULL, '0', '0');
+
+-- 3.2 子菜单：碳资产数据
+INSERT INTO "public"."sys_menu" ("menu_id","menu_name","parent_id","order_num","path","component","is_frame","menu_type","visible","perms","icon","create_by","create_time","update_by","update_time","remark","page_parameter","query","status","is_cache")
+VALUES (3101, '碳资产数据', 3100, 1, 'supplychaincarbon', 'carbonasset/index', '1', 'C', '0', 'carbonAsset:asset:query', 'edit', 'admin', NOW(), NULL, NULL, NULL, NULL, NULL, '0', '0');
+
+-- 3.3 按钮权限：查询
+INSERT INTO "public"."sys_menu" ("menu_id","menu_name","parent_id","order_num","path","component","is_frame","menu_type","visible","perms","icon","create_by","create_time","update_by","update_time","remark","page_parameter","query","status","is_cache")
+VALUES (3102, '查询', 3101, 1, NULL, NULL, '1', 'F', '0', 'carbonAsset:asset:query', '#', 'admin', NOW(), NULL, NULL, NULL, NULL, NULL, '0', '0');
+
+-- 3.4 按钮权限：保存
+INSERT INTO "public"."sys_menu" ("menu_id","menu_name","parent_id","order_num","path","component","is_frame","menu_type","visible","perms","icon","create_by","create_time","update_by","update_time","remark","page_parameter","query","status","is_cache")
+VALUES (3103, '保存', 3101, 2, NULL, NULL, '1', 'F', '0', 'carbonAsset:asset:save', '#', 'admin', NOW(), NULL, NULL, NULL, NULL, NULL, '0', '0');
+
+-- 更新序列值（确保后续自增不冲突）
+SELECT setval('"public"."menu_id_seq"', 3103, true);
