@@ -5,7 +5,7 @@ integrating real-time energy monitoring, multi-granularity consumption
 analysis, scope-aware carbon accounting (ISO 14064-1 / MEE), five-stage
 product carbon footprint assessment (ISO 14067), supply-chain Scope 3
 tracking, and a four-phase digitized MRV workflow on a single technology
-stack (MQTT, InfluxDB 2.7, PostgreSQL 14, Spring Boot 2.5, Vue 3).
+stack (MQTT, InfluxDB 2.7, PostgreSQL 14, Spring Boot 4.0.6, Vue 3).
 
 This codebase accompanies the manuscript
 *"CESI EMS: An Integrated Carbon-Energy Management System with IoT-to-Carbon
@@ -29,7 +29,7 @@ cesi-ems/
 
 | Service     | Version              | Default Port | Purpose                                          |
 |-------------|----------------------|--------------|--------------------------------------------------|
-| Java        | 1.8+ (17 tested)     | -            | Backend build / runtime                          |
+| Java        | 21+                  | -            | Backend build / runtime                          |
 | Maven       | 3.6+                 | -            | Backend build                                    |
 | Node.js     | 18+                  | -            | Frontend build                                   |
 | Yarn        | 1.x                  | -            | Frontend package manager (do not mix with npm)   |
